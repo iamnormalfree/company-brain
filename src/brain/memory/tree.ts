@@ -295,6 +295,11 @@ export async function reconcileBrainMemoryNodeMappings(
 	mappings: BrainNodeMapping[],
 ): Promise<BrainNodeMapping[]> {
 	const valid = new Set<string>()
+	// Track which document IDs had a fulfilled API response, so we can tell
+	// "explicit failed" apart from "transient API rejection" (404 during
+	// indexing lag, network blip, etc.). Transient rejections leave the
+	// mapping intact; only fulfilled failed statuses drop it.
+	const fulfilled = new Set<string>()
 	const byId = new Map(mappings.map((mapping) => [mapping.documentId, mapping]))
 	const documentIds = [...byId.keys()]
 	const pages = await mapWithConcurrency(
@@ -303,11 +308,14 @@ export async function reconcileBrainMemoryNodeMappings(
 		(chunk) => documentStatuses(env, chunk),
 	)
 	for (const statuses of pages) {
-		for (const row of statuses.values()) {
-			if (row.status !== "failed") valid.add(row.id)
+		for (const [id, row] of statuses) {
+			fulfilled.add(id)
+			if (row.status !== "failed") valid.add(id)
 		}
 	}
-	const stale = mappings.filter((mapping) => !valid.has(mapping.documentId))
+	const stale = mappings.filter(
+		(mapping) => fulfilled.has(mapping.documentId) && !valid.has(mapping.documentId),
+	)
 	deleteBrainMemoryNodeMappings(agent, stale)
 	return mappings.filter((mapping) => valid.has(mapping.documentId))
 }
@@ -616,18 +624,26 @@ export async function fetchSubtreeBrainMemories(
 		before?: Date
 		after?: Date
 	},
-): Promise<Array<{ memory: string; updatedAt: Date }>> {
+): Promise<{
+	memories: Array<{ memory: string; updatedAt: Date }>
+	mappingCount: number
+}> {
+	const allMappings = listBrainMemoryNodeMappings(agent, {
+		containerTags: params.containerTags,
+		nodePath: params.nodePath,
+		descendants: true,
+	})
 	const mappings = await reconcileBrainMemoryNodeMappings(
 		env,
 		params.orgId,
 		agent,
-		listBrainMemoryNodeMappings(agent, {
-			containerTags: params.containerTags,
-			nodePath: params.nodePath,
-			descendants: true,
-		}),
+		allMappings,
 	)
-	if (!mappings.length) return []
+	// mappingCount reflects what was on disk before reconcile — used by callers
+	// to distinguish "node has documents but they're still indexing" from
+	// "node has no documents at all".
+	const mappingCount = allMappings.length
+	if (!mappings.length) return { memories: [], mappingCount }
 	const rows = await hydrateLiveBrainNodeMappings(
 		env,
 		params.orgId,
@@ -644,5 +660,5 @@ export async function fetchSubtreeBrainMemories(
 		memories.push({ memory, updatedAt: row.updatedAt })
 		if (memories.length >= params.limit) break
 	}
-	return memories
+	return { memories, mappingCount }
 }

@@ -208,24 +208,27 @@ export function createContextDiscoveryTools(args: {
 				before: beforeDate,
 				after: afterDate,
 			})
-			const page = fetched.slice(0, READ_NODE_PAGE)
-			const hasMore = fetched.length > READ_NODE_PAGE
+			const page = fetched.memories.slice(0, READ_NODE_PAGE)
+			const hasMore = fetched.memories.length > READ_NODE_PAGE
 			const memories = page.map((row) => row.memory)
 			const nextCursor = hasMore
 				? page[page.length - 1]?.updatedAt.toISOString()
 				: undefined
 			console.log(
-				`[company-brain][${traceId}] read_memory_node path="${logPreview(path)}" before=${before ?? "-"} after=${after ?? "-"} returned=${memories.length} more=${hasMore}`,
+				`[company-brain][${traceId}] read_memory_node path="${logPreview(path)}" before=${before ?? "-"} after=${after ?? "-"} returned=${memories.length} mappingCount=${fetched.mappingCount} more=${hasMore}`,
 			)
 			if (!memories.length) {
-				return {
-					path,
-					memories: [],
-					note:
-						before || after
+				// Distinguish "node has linked documents but supermemory hasn't
+				// extracted/embedded/indexed them yet" from "node is genuinely
+				// empty" — the former is normal during the first ~hour after a
+				// save batch and looks like a bug to the user otherwise.
+				const note =
+					fetched.mappingCount > 0 && !before && !after
+						? `Found ${fetched.mappingCount} document${fetched.mappingCount === 1 ? "" : "s"} linked to this node, but supermemory hasn't extracted them yet. Try again in a few minutes.`
+						: before || after
 							? "No memories in this range under the node."
-							: "No memories under this node.",
-				}
+							: "No memories under this node."
+				return { path, memories: [], note }
 			}
 			return nextCursor ? { path, memories, nextCursor } : { path, memories }
 		},
