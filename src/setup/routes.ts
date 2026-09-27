@@ -33,6 +33,11 @@ export const setupRoutes = new Hono<AppContext>()
 					.limit(1)
 					.catch(() => [])
 			: []
+		const rawReconfigure = c.req.query("reconfigure")
+		const reconfigure =
+			rawReconfigure === "slack" || rawReconfigure === "keys"
+				? rawReconfigure
+				: null
 		return c.html(
 			setupPage({
 				origin,
@@ -52,6 +57,7 @@ export const setupRoutes = new Hono<AppContext>()
 				signedIn: Boolean(c.get("user")),
 				installedTeam: installed ? (installed.teamName ?? "your workspace") : null,
 				manifest: slackAppManifest(origin),
+				reconfigure,
 			}),
 		)
 	})

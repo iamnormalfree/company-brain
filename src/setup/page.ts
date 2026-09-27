@@ -12,6 +12,8 @@ type PageParams = {
 	/** The installed Slack workspace's name, or null before the bot is installed. */
 	installedTeam: string | null
 	manifest: object
+	/** When set, the matching step renders its form again so admins can re-paste credentials. */
+	reconfigure: "slack" | null
 }
 
 type StepState = "done" | "current" | "upcoming"
@@ -127,7 +129,16 @@ export function setupPage(params: PageParams): string {
 	// after the app exists, and installing needs someone signed in to own it.
 	const states: Record<"keys" | "slack" | "signin" | "install", StepState> = {
 		keys: keysDone ? "done" : "current",
-		slack: params.slackConfigured ? "done" : keysDone ? "current" : "upcoming",
+		slack:
+			params.reconfigure === "slack"
+				? keysDone
+					? "current"
+					: "current"
+				: params.slackConfigured
+					? "done"
+					: keysDone
+						? "current"
+						: "upcoming",
 		signin: params.signedIn
 			? "done"
 			: params.slackConfigured
@@ -212,7 +223,9 @@ export function setupPage(params: PageParams): string {
 		2,
 		states.slack,
 		"Create a Slack app",
-		"Slack app connected.",
+		params.slackConfigured
+			? `Slack app connected. <a class="reconfigure-link" href="/setup?reconfigure=slack">Update credentials</a>`
+			: "Slack app connected.",
 		slackAppBody(params),
 	)}
 	${step(
