@@ -76,7 +76,7 @@ function openRouterModel(modelName: SupportedModel, apiKey: string) {
 		name: "openrouter",
 		apiKey,
 		baseURL: OPENROUTER_BASE_URL,
-		headers: { "X-Title": "Company Brain" },
+		headers: { "X-Title": "Kongming" },
 	}).chat(openRouterModelId(modelName))
 }
 

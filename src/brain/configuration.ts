@@ -244,7 +244,7 @@ export function createConfigurationTool(args: {
 
 	const get_configuration = deps.tool({
 		description:
-			"Look up how this Company Brain is currently configured: connected apps and the connectable catalog, automations and reminders, model settings, Slack proactivity, workspace prompt and company context, trial status, and capabilities. Read-only. Use it whenever someone asks what you are set up to do, what is connected, or why a behavior is on or off; summarize the relevant part rather than dumping the raw object.",
+			"Look up how this Kongming deployment is currently configured: connected apps and the connectable catalog, automations and reminders, model settings, Slack proactivity, workspace prompt and company context, trial status, and capabilities. Read-only. Use it whenever someone asks what you are set up to do, what is connected, or why a behavior is on or off; summarize the relevant part rather than dumping the raw object.",
 		inputSchema: deps.z.object({}),
 		execute: async () => {
 			const t = Date.now()
@@ -302,7 +302,7 @@ export function createConfigurationTool(args: {
 
 	const update_configuration = deps.tool({
 		description:
-			"Change one piece of this workspace's Company Brain configuration: company_domain, proactivity_default, channel_proactivity, models and workspace_prompt. All are admin-only, matching the web settings pages. Setting company_domain re-runs company research and updates the saved research findings in place, so it can be changed whenever the company's domain changes. Use it when someone asks to change a setting instead of describing where to click.",
+			"Change one piece of this workspace's Kongming configuration: company_domain, proactivity_default, channel_proactivity, models and workspace_prompt. All are admin-only, matching the web settings pages. Setting company_domain re-runs company research and updates the saved research findings in place, so it can be changed whenever the company's domain changes. Use it when someone asks to change a setting instead of describing where to click.",
 		inputSchema: deps.z.object({
 			field: deps.z
 				.enum([

@@ -29,7 +29,7 @@ export function SlackHandoff({
 				</div>
 				<h2 className="text-[20px] font-semibold text-[#FAFAFA]">
 					{teamName
-						? `Company Brain is live in ${teamName}`
+						? `Kongming is live in ${teamName}`
 						: "Company Brain is live in your Slack"}
 				</h2>
 				<p className="mt-2 text-[13px] leading-relaxed text-[#8A94A6]">

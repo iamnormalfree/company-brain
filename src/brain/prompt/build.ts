@@ -571,7 +571,7 @@ export function formatThreadHistoryEntries(args: {
 					role: "assistant" as const,
 					content: body,
 					speakerKind: "company_brain" as const,
-					speakerLabel: "Company Brain",
+					speakerLabel: "Kongming",
 					slackUserId: message.user,
 					slackBotId: message.bot_id,
 				}
@@ -718,8 +718,8 @@ function formatThreadLine(args: {
 	if (isOurSlackBotMessage(message, botUserId, slackBotId)) {
 		const traceId = message.ts ? traceByTs?.get(message.ts) : undefined
 		return traceId
-			? `${stamp}Company Brain: <bot_message ts="${message.ts}" trace_id="${traceId}">${body}</bot_message>`
-			: `${stamp}Company Brain: ${body}`
+			? `${stamp}Kongming: <bot_message ts="${message.ts}" trace_id="${traceId}">${body}</bot_message>`
+			: `${stamp}Kongming: ${body}`
 	}
 
 	if (

@@ -466,7 +466,7 @@ export class CompanyBrainAgent extends Agent<Env, CompanyBrainState> {
 		return runInDbScope(() => impl.runSlackUserChangeRetry(this, payload))
 	}
 
-	// Remember the #company-brain home channel created at install bootstrap.
+	// Remember the #kongming home channel created at install bootstrap.
 	async setHomeChannel(payload: HomeChannel): Promise<void> {
 		return (await this.loadImpl()).setHomeChannel(this, payload)
 	}

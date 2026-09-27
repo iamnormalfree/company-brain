@@ -73,7 +73,7 @@ export function automaticTeamInviteProgressBlocks(args: {
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*Adding your workspace to Company Brain* 👥\nFull members are being provisioned, invited to #company-brain, and sent a personal introduction. Guests and external members are excluded.",
+				text: "*Adding your workspace to Kongming* 👥\nFull members are being provisioned, invited to #kongming, and sent a personal introduction. Guests and external members are excluded.",
 			},
 		},
 		{
@@ -171,7 +171,7 @@ export function memberIntroText(parts: MemberIntroParts): string {
 	const { firstName, companyName, homeChannelId, starters } = parts
 	const hi = firstName ? `Hey ${firstName},` : "Hey,"
 	const subject = companyName ?? "your company"
-	const home = homeChannelId ? `<#${homeChannelId}>` : "#company-brain"
+	const home = homeChannelId ? `<#${homeChannelId}>` : "#kongming"
 	const picks = starters?.length ? starters : DEFAULT_MEMBER_STARTERS
 
 	const lines = [

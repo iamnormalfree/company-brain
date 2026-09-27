@@ -27,7 +27,7 @@ export type InstallGreetingParts = {
 export function installGreeting(parts: InstallGreetingParts = {}): string {
 	const { firstName, companyName, homeChannelId, starters, trialActive } = parts
 	const hi = firstName ? `Hey ${firstName},` : "Hey,"
-	const home = homeChannelId ? `<#${homeChannelId}>` : "#company-brain"
+	const home = homeChannelId ? `<#${homeChannelId}>` : "#kongming"
 	const subject = companyName ?? "your company"
 
 	const picks = starters?.length ? starters : DEFAULT_STARTERS
@@ -82,7 +82,7 @@ export function memberGreeting(
 ): string {
 	const hi = firstName ? `Hey ${firstName},` : "Hey,"
 	const place = org ? ` to *${org}*` : ""
-	return `${hi} welcome${place}. I'm Supermemory, I keep track of what the team's working on. Need to get up to speed? Just ask me anything.`
+	return `${hi} welcome${place}. I'm Kongming — Brent's chief strategist. I keep track of what the team's working on. Need to get up to speed? Just ask me anything.`
 }
 
 export async function orgWithBrain(

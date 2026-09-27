@@ -1,6 +1,6 @@
 import type { ProfileBucketDef } from "@repo/db/schema/common"
 
-// Company Brain memory-model config: the memory buckets offered to ingestion
+// Kongming (Company Brain) memory-model config: the memory buckets offered to ingestion
 // plus the per-scope entity context that steers tagged Slack memory ingestion.
 
 // Capture policy woven into every tag's entity context: infer from behaviour,
@@ -79,7 +79,7 @@ export function buildBrainSharedEntityContext(params: {
 	domain?: string | null
 	about?: string | null
 }): string {
-	const header = `Organization: ${params.orgName}${params.domain ? ` (${params.domain})` : ""}. This is the shared Company Brain for everyone in this org — the team's collective memory, fed continuously from Slack.`
+	const header = `Organization: ${params.orgName}${params.domain ? ` (${params.domain})` : ""}. This is the shared memory of Kongming — Brent's chief strategist — for everyone in this org. The team's collective context, fed continuously from Slack.`
 	const aboutLine = params.about?.trim() ? `About: ${params.about.trim()}` : ""
 	return [
 		header,
@@ -100,7 +100,7 @@ export function buildBrainPersonalEntityContext(params: {
 }): string {
 	const who = params.memberName?.trim() || "this teammate"
 	return [
-		`This is ${who}'s private memory, formed only from their direct messages with Company Brain.`,
+		`This is ${who}'s private memory, formed only from their direct messages with Kongming.`,
 		`Capture what helps serve ${who} personally: their preferences and working patterns, their tasks and next steps, and their working context.`,
 		"Infer preferences and patterns from their behavior generously — you do not need them stated. Single-observation or low-confidence inferences should carry a short forget horizon so they fade unless they recur; when the same pattern shows up again, reinforce the existing memory. Real patterns survive, one-offs fade.",
 		"Do NOT capture company-wide facts (those belong in the shared brain) or other people's private information. This memory is private to this person.",

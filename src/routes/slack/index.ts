@@ -959,7 +959,7 @@ export const slackRoutes = new Hono<AppContext>()
 						})
 						if (!actor.actor) {
 							await updateSlackInteractionResponse(memberConnect.responseUrl, {
-								text: "I couldn't verify your Company Brain membership. Ask a workspace admin to restore your access.",
+								text: "I couldn't verify your Kongming access. Ask a workspace admin to restore your access.",
 								responseType: "ephemeral",
 							})
 							return

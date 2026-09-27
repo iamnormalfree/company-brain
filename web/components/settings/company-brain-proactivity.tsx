@@ -41,7 +41,7 @@ const MODES: {
 	{
 		id: "own_channel_only",
 		label: "Only its own channel",
-		description: "Speaks only in #company-brain unless @mentioned or DMed.",
+		description: "Speaks only in #kongming unless @mentioned or DMed.",
 	},
 ]
 
