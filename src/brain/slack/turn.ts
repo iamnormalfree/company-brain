@@ -1928,7 +1928,7 @@ async function runSlackTurnInner(
 	const skipReactions = opts?.skipReactions === true
 	const passiveInvestigation = opts?.passiveInvestigation
 
-	const question = cleanMention(ev.text)
+	const question = cleanMention(ev.text) || (isMention ? "(wake)" : "")
 	if (!question) {
 		if (storedEventIdentity) {
 			markStoredEventFiltered(
