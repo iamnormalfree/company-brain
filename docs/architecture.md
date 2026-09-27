@@ -69,7 +69,7 @@ Container tags (`apps/api/src/lib/spaces/provisioning.ts`, `memory/writeback.ts`
 
 **Write:** exactly one container from the Slack scope. DM without mapped `userId` → **no write**.
 
-**Read** (`memory/read-scope.ts`): always `sm_org_shared` + current scope tag. **DM also reads every private-channel container the asker can access** (membership table).
+**Read** (`memory/read-scope.ts`): strictly the container(s) implied by the current scope's kind. `dm` → asker's personal container only. `private_channel` → that channel's container only. `shared` (public channel) → `sm_org_shared`. An admin-console override replaces the derived set. Cross-scope reads are not permitted by the read path — the previous behavior (DM reading every private channel the asker belonged to) was a privacy leak that has been fixed.
 
 **Search** (`memory/search-brain.ts`): hybrid, `limit: 40` per container, threshold `0.3`, batch concurrency 6, dedupe by id, return top 40.
 

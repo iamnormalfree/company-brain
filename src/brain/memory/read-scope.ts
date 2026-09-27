@@ -1,14 +1,12 @@
-import { SHARED_TEAM_BRAIN_CONTAINER_TAG } from "@/lib/spaces/provisioning"
-import { readableSlackChannelContainerTagsForUser } from "../slack/channel-membership"
+import { privateContainerTagFor, SHARED_TEAM_BRAIN_CONTAINER_TAG } from "@/lib/spaces/provisioning"
+import { privateSlackChannelContainerTag } from "./writeback"
 import type { CompanyBrainAgent } from "../turn/agent"
-import { type SlackMemoryScope, slackMemoryContainerTag } from "./writeback"
+import { type SlackMemoryScope } from "./writeback"
 
-// The container tags a turn may READ from — always a superset of the single
-// write tag (slackMemoryContainerTag). Shared Team Brain + the current scope's
-// own tag, plus — for a personal DM — EVERY private channel the asker belongs
-// to, i.e. their full access surface (no cap; searchBrain bounds the fan-out
-// with batched concurrency). Public and private channels are unchanged: they
-// only ever read shared + their own tag.
+// The container tags a turn may READ from — strictly the container(s) implied
+// by the current scope's kind, so a DM cannot surface shared-team or other-
+// private-channel memories. The admin-console override replaces the derived set
+// (an empty `[]` means read nothing).
 export function resolveBrainReadContainerTags(
 	agent: CompanyBrainAgent,
 	scope: SlackMemoryScope | undefined,
@@ -17,16 +15,11 @@ export function resolveBrainReadContainerTags(
 ): string[] {
 	// An explicit empty surface means read nothing, not fall back to the derived set.
 	if (override !== undefined) return [...new Set(override)]
-	const tags = new Set<string>([SHARED_TEAM_BRAIN_CONTAINER_TAG])
-	const scopeTag = slackMemoryContainerTag(scope)
-	if (scopeTag) tags.add(scopeTag)
-	if (scope?.kind === "dm" && scope.slackUserId) {
-		for (const tag of readableSlackChannelContainerTagsForUser(
-			agent,
-			scope.slackUserId,
-		)) {
-			tags.add(tag)
-		}
+	if (scope?.kind === "dm") {
+		return scope.userId ? [privateContainerTagFor(scope.userId)] : []
 	}
-	return [...tags]
+	if (scope?.kind === "private_channel") {
+		return [privateSlackChannelContainerTag(scope.channelId)]
+	}
+	return [SHARED_TEAM_BRAIN_CONTAINER_TAG]
 }
