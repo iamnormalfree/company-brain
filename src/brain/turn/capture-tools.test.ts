@@ -107,7 +107,11 @@ describe("save_memory tool (audit Finding 2: surface bail-out)", () => {
 		expect(tools.save_memory).toBeUndefined()
 	})
 
-	it("returns { saved: true, ... } when scope is undefined (host's problem to gate elsewhere)", async () => {
+	it("returns { saved: false, reason: 'scope_missing' } when scope is undefined (Slack-turn invariant)", async () => {
+		// A Slack turn always carries a SlackMemoryScope. If save_memory is
+		// invoked with scope:undefined, the assembly path is broken — refuse
+		// rather than pick a default container (which could leak into
+		// sm_org_shared).
 		const tools = createCaptureTools(stubDeps, capture, "trace-5", {
 			allowWrites: true,
 			scope: undefined,
@@ -115,7 +119,24 @@ describe("save_memory tool (audit Finding 2: surface bail-out)", () => {
 		const saveMemory = tools.save_memory as unknown as {
 			execute: (input: unknown) => Promise<unknown>
 		}
-		const result = await saveMemory.execute({ memories: doc })
-		expect(result).toEqual({ saved: true })
+		const result = (await saveMemory.execute({ memories: doc })) as {
+			saved: boolean
+			reason?: string
+		}
+		expect(result.saved).toBe(false)
+		expect(result.reason).toBe("scope_missing")
+	})
+
+	it("does not set capture.memory when scope is missing", async () => {
+		const fresh: TurnCapture = { memory: null, connect: null }
+		const tools = createCaptureTools(stubDeps, fresh, "trace-6", {
+			allowWrites: true,
+			scope: undefined,
+		})
+		const saveMemory = tools.save_memory as unknown as {
+			execute: (input: unknown) => Promise<unknown>
+		}
+		await saveMemory.execute({ memories: doc })
+		expect(fresh.memory).toBeNull()
 	})
 })

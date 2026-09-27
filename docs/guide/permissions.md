@@ -16,13 +16,15 @@ Under the hood these are supermemory container tags in the account your deployme
 
 ## What a conversation can read
 
-Writing is narrow; reading is **strictly per-scope**: every question reads only the memory of the room it's asked in. Cross-scope reads are not permitted by the read path; earlier versions of Company Brain widened the read surface based on asker access, but that leaked private-channel bodies into DMs and was changed to a strict-per-scope mapping.
+Writing is narrow; reading is **strictly per-scope** within that room's container. Earlier versions of Company Brain widened the read surface based on asker access, but that leaked private-channel bodies into DMs and was changed to a strict-per-scope mapping.
 
 | Asking from | Can read |
 |---|---|
-| A public channel | Public channel memory only |
+| A public channel | The organization-wide shared public memory (`sm_org_shared`) — every public-channel turn in the workspace contributes to and reads from the same container |
 | A private channel | That channel's memory only |
 | A DM with the bot | Your employee memory only |
+
+A public channel's "scope" is the **organization**, not the channel itself: any message in any public channel in this Slack workspace can read the same shared memory, regardless of which specific channel it's asked from. Treat `sm_org_shared` as a workspace-broadcast surface, not a per-room isolation. If your workspace hosts data from multiple clients or workstreams, `sm_org_shared` is the wrong container for anything that should not cross them.
 
 ```mermaid
 flowchart LR

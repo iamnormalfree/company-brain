@@ -55,16 +55,28 @@ export function createCaptureTools(
 				"memories" in input
 					? input.memories
 					: (input as unknown as MemoryWriteback)
-			// Fail closed on unknown_channel: the host cannot determine which
-			// container to write to, so the write site would silently skip.
-			// Tell the model the truth so it can tell the user.
-			if (options?.scope?.kind === "unknown_channel") {
+			// Fail closed: a Slack turn always has a SlackMemoryScope. If it
+			// doesn't, the assembly path is wrong (save_memory would never be
+			// invoked outside a Slack turn that has set slackLookup). Treat
+			// either unknown_channel or missing-scope as a write bail-out.
+			if (
+				!options?.scope ||
+				options.scope.kind === "unknown_channel"
+			) {
+				const reason =
+					options?.scope?.kind === "unknown_channel"
+						? "scope_unknown_channel"
+						: "scope_missing"
+				const channelId =
+					options?.scope?.kind === "unknown_channel"
+						? options.scope.channelId
+						: ""
 				console.log(
-					`[kongming][${traceId}] save_memory refused: scope kind=unknown_channel channelId="${options.scope.channelId ?? ""}"`,
+					`[kongming][${traceId}] save_memory refused: ${reason} channelId="${channelId}"`,
 				)
 				return {
 					saved: false,
-					reason: "scope_unknown_channel",
+					reason,
 					message: `Could not save to memory: the channel couldn't be classified, so I don't know which container is safe. Try again in a DM, a known private channel, or ask an admin to verify the Slack app's events.`,
 				}
 			}

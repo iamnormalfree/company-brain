@@ -1,55 +1,96 @@
 import { describe, expect, it, vi } from "vitest"
 import { listBrainMemoryTags } from "./tags"
+import { SHARED_TEAM_BRAIN_CONTAINER_TAG } from "@/lib/spaces/provisioning"
 
-// The DB layer is what `listBrainMemoryTags` actually queries. We don't need
-// real supermemory here — we just want to assert that the scope-handling
-// logic is fail-closed when the caller passes a container list that excludes
-// sm_org_shared (i.e. an unknown_channel read surface).
+/**
+ * Pins the audit F1 fix: listBrainMemoryTags must NOT auto-inject
+ * sm_org_shared. The implementation queries `brain_memory_tag` once per
+ * (container_tag, kind) pair using `agent.sql<TagRow>`; if SHARED had been
+ * auto-injected into the scope list, we'd see a SQL call with
+ * container_tag = 'sm_org_shared'. We assert by intercepting agent.sql and
+ * recording every call's tag argument.
+ */
 
-// Mock the DB-tagged function helpers the implementation ends up calling.
-vi.mock("@/lib/memory-entry-metadata", () => ({
-	BRAIN_TAGS_METADATA_KEY: "brain_tags",
-	BRAIN_TAG_LABELS_METADATA_KEY: "brain_tag_labels",
-}))
+type RecordedCall = { containerTag: unknown; kind: unknown }
+
+function makeRecordingAgent() {
+	const calls: RecordedCall[] = []
+	return {
+		calls,
+		agent: {
+			sql: (strings: TemplateStringsArray, ...values: unknown[]) => {
+				// SQL fragment signature is template literal; values[0] is the first
+				// interpolated parameter — for our query that's container_tag.
+				// Find the WHERE container_tag = $N fragment to be precise.
+				const sqlFrag = strings.join("?")
+				const idxContainer = sqlFrag.indexOf("container_tag =")
+				const idxLimit = sqlFrag.indexOf("LIMIT")
+				const record = (i: number): RecordedCall | undefined => {
+					if (i < 0 || i >= values.length) return undefined
+					return {
+						containerTag: values[i],
+						kind: values[i + 1],
+					}
+				}
+				const i = idxContainer >= 0 ? 0 : -1
+				const rec = record(i)
+				if (rec) calls.push(rec)
+				// Limit the row count for stable sort behavior below.
+				void idxLimit
+				return []
+			},
+		} as unknown as Parameters<typeof listBrainMemoryTags>[0],
+	}
+}
 
 describe("listBrainMemoryTags (audit Finding 1: no auto-injected shared scope)", () => {
-	it("does NOT auto-inject sm_org_shared when currentContainerTags is [] (unknown_channel read surface)", () => {
-		// Stub agent — the implementation queries DO SQL; we don't need a real
-		// agent to assert the scope-handling logic. The internal SQL call would
-		// return [] for an empty containerTags list under the corrected behavior.
-		const fakeAgent = {
-			sql: vi.fn(() => []),
-		} as unknown as Parameters<typeof listBrainMemoryTags>[0]
-		const tags = listBrainMemoryTags(fakeAgent, {
-			currentContainerTags: [],
-		})
-		// The auto-injection bug returned SHARED tags here. Now it doesn't.
-		expect(tags).toEqual([])
+	it("does NOT query sm_org_shared when currentContainerTags is empty (unknown_channel read surface)", () => {
+		const rec = makeRecordingAgent()
+		listBrainMemoryTags(rec.agent, { currentContainerTags: [] })
+		// No SQL call had container_tag = 'sm_org_shared' injected by the function.
+		const sharedLeaks = rec.calls.filter(
+			(c) => c.containerTag === SHARED_TEAM_BRAIN_CONTAINER_TAG,
+		)
+		expect(sharedLeaks).toEqual([])
 	})
 
-	it("does NOT auto-inject sm_org_shared when currentContainerTags is null (defensive default)", () => {
-		const fakeAgent = {
-			sql: vi.fn(() => []),
-		} as unknown as Parameters<typeof listBrainMemoryTags>[0]
-		const tags = listBrainMemoryTags(fakeAgent, {
-			currentContainerTags: null,
-		})
-		expect(tags).toEqual([])
+	it("does NOT query sm_org_shared when currentContainerTags is null/undefined", () => {
+		const rec = makeRecordingAgent()
+		listBrainMemoryTags(rec.agent, { currentContainerTags: null })
+		const sharedLeaks = rec.calls.filter(
+			(c) => c.containerTag === SHARED_TEAM_BRAIN_CONTAINER_TAG,
+		)
+		expect(sharedLeaks).toEqual([])
 	})
 
-	it("queries only the explicit container tags the caller passes (no SHARED leak)", () => {
-		const fakeAgent = {
-			sql: vi.fn(() => []),
-		} as unknown as Parameters<typeof listBrainMemoryTags>[0]
-		listBrainMemoryTags(fakeAgent, {
+	it("does NOT query sm_org_shared when called with no arguments at all", () => {
+		const rec = makeRecordingAgent()
+		listBrainMemoryTags(rec.agent)
+		const sharedLeaks = rec.calls.filter(
+			(c) => c.containerTag === SHARED_TEAM_BRAIN_CONTAINER_TAG,
+		)
+		expect(sharedLeaks).toEqual([])
+	})
+
+	it("queries ONLY the explicit container tags the caller passes", () => {
+		const rec = makeRecordingAgent()
+		listBrainMemoryTags(rec.agent, {
 			currentContainerTags: ["user_DtFa8t7T4xP66BccLUnhML"],
 		})
-		// Inspect the SQL call to confirm sm_org_shared was NOT added.
-		// The implementation builds the scope array from currentContainerTags only;
-		// it cannot contain SHARED_TEAM_BRAIN_CONTAINER_TAG via auto-injection.
-		// Surface assertion: the function ran without throwing and didn't pull
-		// in sm_org_shared implicitly — covered by the empty-array test above
-		// and the explicit-array test below.
-		expect(fakeAgent.sql).toHaveBeenCalled()
+		// Exactly one SQL call, with the caller's container as the WHERE binding.
+		// If auto-injection were still active, we'd see a second call with
+		// sm_org_shared.
+		const queryTags = rec.calls.map((c) => c.containerTag)
+		expect(queryTags).toContain("user_DtFa8t7T4xP66BccLUnhML")
+		expect(queryTags).not.toContain(SHARED_TEAM_BRAIN_CONTAINER_TAG)
+	})
+
+	it("queries sm_org_shared when the caller opts in explicitly via currentContainerTags (auto-research path)", () => {
+		const rec = makeRecordingAgent()
+		listBrainMemoryTags(rec.agent, {
+			currentContainerTags: [SHARED_TEAM_BRAIN_CONTAINER_TAG],
+		})
+		const queryTags = rec.calls.map((c) => c.containerTag)
+		expect(queryTags).toContain(SHARED_TEAM_BRAIN_CONTAINER_TAG)
 	})
 })

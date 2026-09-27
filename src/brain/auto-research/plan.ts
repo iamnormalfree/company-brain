@@ -4,6 +4,7 @@ import { getGenerateTextStructuredOutput } from "@/lib/ai-utils"
 import { captureException } from "@/lib/capture"
 import { type BrainCostLedger, responseBodyFromResult } from "../billing/cost"
 import { resolveBillableModel } from "../billing/model-prices"
+import { SHARED_TEAM_BRAIN_CONTAINER_TAG } from "@/lib/spaces/provisioning"
 import { getCompanyContext } from "../memory/company-context"
 import { buildBrainProfileContext } from "../memory/profile-recall"
 import { listBrainMemoryTags } from "../memory/tags"
@@ -116,7 +117,12 @@ export async function derivePlan(
 		getCompanyContext(env, orgId),
 		buildBrainProfileContext(agent, { orgId }),
 	])
+	// Auto-research is a workspace-level background planner. It legitimately
+	// needs the shared workspace tag vocabulary; opt in explicitly. The 2026-09-27
+	// audit's F1 fix removed auto-injection of SHARED from listBrainMemoryTags to
+	// close a leak via unknown-channel turns; auto-research has to opt back in.
 	const vocab = listBrainMemoryTags(agent, {
+		currentContainerTags: [SHARED_TEAM_BRAIN_CONTAINER_TAG],
 		kinds: ["topic", "project", "customer"],
 		limit: 40,
 	}).map((t) => t.label)
