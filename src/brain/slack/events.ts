@@ -190,16 +190,6 @@ export function isDirectConversationEvent(ev: SlackEventInner): boolean {
 	return ev.channel_type === "im" || isDirectSlackChannel(ev.channel)
 }
 
-export function isPrivateSlackChannel(
-	channel: string | undefined,
-	channelType: string | undefined,
-): boolean {
-	if (channelType === "group" || channelType === "mpim") return true
-	if (channelType === "channel" || channelType === "im") return false
-	if (/^G/.test(channel ?? "")) return true
-	return /^C/.test(channel ?? "")
-}
-
 export function isAssistantThreadMessage(ev: SlackEventInner): boolean {
 	if (ev.type !== "message") return false
 	// Agent Messages follow-ups are ordinary IM messages with thread_ts.

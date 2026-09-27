@@ -133,12 +133,12 @@ import {
 	isBotMentioned,
 	isDirectMessage,
 	isEmojiOnlySlackText,
-	isPrivateSlackChannel,
 	isSlackContentMessageSubtype,
 	mentionedUserIds,
 	type SlackTurnMessage,
 	triageProfileUserIds,
 } from "./events"
+import { slackMemoryScopeForTurn, slackMemoryWriterUserId } from "./scope"
 import { BRAIN_TRACE_POSTHOG_BASE } from "./format"
 import {
 	postSlackMcpConnectButtons,
@@ -216,52 +216,6 @@ const THREAD_TRIAGE_CONTEXT_LIMIT = 50
 const SLACK_ACK_REACTION = "ack"
 const SLACK_ACK_FALLBACK_REACTION = "white_check_mark"
 const SLACK_COMPLETED_REPLY_REACTION = "brain"
-
-function slackMemoryScopeForTurn(args: {
-	isDM: boolean
-	channel: string
-	channelType?: string
-	userId?: string
-	slackUserId?: string
-	conversationInfo?: SlackConversationInfo
-}): SlackMemoryScope {
-	const { isDM, channel, channelType, userId, slackUserId, conversationInfo } =
-		args
-	const base = {
-		channelId: channel,
-		...(channelType ? { channelType } : {}),
-	}
-	const scopedUser = userId ? { userId } : {}
-	if (isDM) {
-		return {
-			kind: "dm",
-			...base,
-			...scopedUser,
-			...(slackUserId ? { slackUserId } : {}),
-		}
-	}
-
-	// Privacy signals are intentionally monotonic: a live private event must
-	// win over cached public conversation info, and cached private info remains
-	// the safer scope when the event is ambiguous.
-	const isPrivate =
-		isPrivateSlackChannel(channel, channelType) ||
-		conversationInfo?.isPrivate === true
-
-	return isPrivate
-		? { kind: "private_channel", ...base, ...scopedUser }
-		: { kind: "shared", ...base }
-}
-
-function slackMemoryWriterUserId(
-	scope: SlackMemoryScope | undefined,
-	fallbackUserId: string | undefined,
-): string | undefined {
-	if (scope?.kind === "dm" || scope?.kind === "private_channel") {
-		return scope.userId
-	}
-	return fallbackUserId
-}
 
 function trustedSlackUserIdsForMemoryTags(
 	message: { user?: string; text?: string },

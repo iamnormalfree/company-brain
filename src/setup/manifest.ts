@@ -58,6 +58,7 @@ export function slackAppManifest(origin: string, appName = SLACK_APP_NAME) {
 					"groups:history",
 					"groups:read",
 					"im:history",
+					"im:read",
 					"im:write",
 					"reactions:read",
 					"reactions:write",

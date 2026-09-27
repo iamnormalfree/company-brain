@@ -21,5 +21,10 @@ export function resolveBrainReadContainerTags(
 	if (scope?.kind === "private_channel") {
 		return [privateSlackChannelContainerTag(scope.channelId)]
 	}
+	if (scope?.kind === "unknown_channel") {
+		// Fail closed: refuse to surface shared-team memories from a channel we
+		// couldn't classify. Better empty than wrong.
+		return []
+	}
 	return [SHARED_TEAM_BRAIN_CONTAINER_TAG]
 }

@@ -112,6 +112,16 @@ export type SlackMemoryScope =
 			channelType?: string
 			userId?: string
 	  }
+	/**
+	 * Privacy fail-closed: when neither `channel_type` from the Slack event nor
+	 * cached `conversationInfo` resolves the channel, the memory path refuses to
+	 * write to the shared container and refuses to read from it.
+	 */
+	| {
+			kind: "unknown_channel"
+			channelId: string
+			channelType?: string
+	  }
 
 export function slackMemoryContainerTag(
 	scope?: SlackMemoryScope,
@@ -121,6 +131,9 @@ export function slackMemoryContainerTag(
 	}
 	if (scope?.kind === "private_channel") {
 		return privateSlackChannelContainerTag(scope.channelId)
+	}
+	if (scope?.kind === "unknown_channel") {
+		return undefined
 	}
 	return SHARED_TEAM_BRAIN_CONTAINER_TAG
 }

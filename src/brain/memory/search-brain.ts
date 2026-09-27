@@ -20,6 +20,7 @@ export {
 	relevantBrainResults,
 	textBrainResults,
 } from "../search-brain-format"
+import { BRAIN_SEARCH_INCLUDE } from "./search-include"
 
 export async function searchBrain(
 	agent: CompanyBrainAgent,
@@ -48,13 +49,14 @@ export async function searchBrain(
 			),
 		),
 	)
-	const include = {
-		documents: false,
-		summaries: false,
-		relatedMemories: false,
-		forgottenMemories: false,
-		chunks: true,
-	}
+	// Include supermemory's extracted summaries alongside chunks. The summary
+	// is the canonical model of a doc the extractor has already digested; the
+	// chunk signal alone tends to over-rank overview / context docs over
+	// concise marker-style docs (e.g. "DM-only marker is `echo`"), which
+	// makes the LLM hedge that "the doc exists but isn't extracted" when
+	// it's actually the include config that's starving it. Documents stay
+	// off by default — summaries are what the LLM needs to cite cleanly.
+	const include = BRAIN_SEARCH_INCLUDE
 	const containerTags = resolveBrainReadContainerTags(
 		agent,
 		scope,
