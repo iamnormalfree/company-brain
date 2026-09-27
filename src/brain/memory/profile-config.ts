@@ -6,13 +6,11 @@ import type { ProfileBucketDef } from "@repo/db/schema/common"
 // Capture policy woven into every tag's entity context: infer from behaviour,
 // decay-unless-reinforced, durable-vs-transient. Lives here, not org filterPrompt.
 export const BRAIN_CAPTURE_POLICY = [
-	"Capture durable, future-useful knowledge — decisions and the reasoning behind them, ownership and who is responsible for what, commitments and their status/blockers, status changes, resolved canonical answers to recurring questions, and constraints. Keep these permanent (no forget horizon).",
-	"Infer freely from behavior and repeated patterns — you do NOT need someone to state something explicitly. An observed pattern is a valid memory.",
-	"Because memory decays, give transient or low-confidence facts a forget horizon so they fade on their own: current status, 'today/this week', live counts, and single-observation inferences that may not recur. When the same thing shows up again, reinforce/update the existing memory instead of adding a duplicate — that renews it and firms it up.",
-	"When new information supersedes an old fact (moved from X to Y, no longer, now), update the existing memory rather than creating a parallel one.",
-	"Capture temporal context: when a fact is tied to a date, event, deadline, incident, or status change, state the date in the memory as YYYY-MM-DD so it can be ordered and staleness resolved.",
-	"Do NOT capture casual chatter and social banter, secrets/credentials, or unverified speculation.",
-	"NEVER store anything a connected tool owns as the live source of truth — PR or review status, issue/ticket state, assignees, deploy or build status, current metrics or counts, calendar or roster state, document contents. Fetch these live from the tool every time; storing them only plants data that goes stale fast and then reads as fact when it is wrong. The ONLY exception is a fact whose tool is not connected for this workspace — and even then, prefer getting it connected.",
+	"Capture durable knowledge: decisions, ownership, commitments, status changes, recurring answers, constraints.",
+	"Infer patterns from behavior, not just explicit statements. Single observations fade unless reinforced; repeated ones persist.",
+	"Use YYYY-MM-DD dates when a fact ties to a date, event, deadline, or status change.",
+	"When new info supersedes old, update the existing memory rather than duplicating.",
+	"Skip casual banter, secrets/credentials, unverified speculation, and any live tool data — fetch PR/issue/deploy status, metrics, calendar, and docs live from the source, never store as authoritative.",
 ].join("\n")
 
 export const BRAIN_MEMORY_BUCKETS: ProfileBucketDef[] = [

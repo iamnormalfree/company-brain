@@ -196,8 +196,18 @@ export function upsertBrainMemoryNode(
 	const documentId = mapping.documentId.trim()
 	const containerTag = normalizeContainerTag(mapping.containerTag)
 	const nodePath = normalizeBrainTagKey(mapping.nodePath)
-	if (!documentId || !containerTag || nodePath === "other") return false
-	if (!isBrainMemoryResetEpochCurrent(agent, expectedResetEpoch)) return false
+	if (!documentId || !containerTag || nodePath === "other") {
+		console.warn(
+			`[brain-memory] upsertBrainMemoryNode SKIP: invalid input documentId="${documentId.slice(0, 12)}" containerTag="${containerTag ?? "(null)"}" nodePath="${nodePath}"`,
+		)
+		return false
+	}
+	if (!isBrainMemoryResetEpochCurrent(agent, expectedResetEpoch)) {
+		console.warn(
+			`[brain-memory] upsertBrainMemoryNode SKIP: epoch stale (expected=${expectedResetEpoch}, current=${getBrainMemoryResetEpoch(agent)})`,
+		)
+		return false
+	}
 	ensureBrainMemoryNodeTable(agent)
 	const now = Date.now()
 	agent.sql`

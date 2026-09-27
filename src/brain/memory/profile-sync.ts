@@ -95,9 +95,21 @@ async function upsertBrainSpaceConfig(
 				metadata: undefined,
 			})
 		)
+	// supermemory rejects entityContext above 1500 chars; truncate with a marker
+	// if an org's profile blows past it. Trimming the source string is preferred
+	// (see BRAIN_CAPTURE_POLICY in profile-config.ts) — this is the safety net.
+	const MAX_ENTITY_CONTEXT = 1400
+	let entityContext = params.entityContext
+	if (entityContext.length > MAX_ENTITY_CONTEXT) {
+		console.warn(
+			`[brain-profile-sync] entityContext for ${params.containerTag} is ${entityContext.length} chars; truncating to ${MAX_ENTITY_CONTEXT}.`,
+		)
+		entityContext =
+			entityContext.slice(0, MAX_ENTITY_CONTEXT - 1).trimEnd() + "…"
+	}
 	await updateContainerTagSettings(env, params.containerTag, {
 		...(keepName ? {} : { name: params.name }),
-		entityContext: params.entityContext,
+		entityContext,
 		profileBuckets: params.profileBuckets,
 	})
 }

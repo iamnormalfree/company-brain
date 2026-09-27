@@ -11,6 +11,9 @@ export const SUPPORTED_MODELS = [
 	"gpt-5.5",
 	"gpt-5.6",
 	"gpt-5.6-terra",
+	"gpt-6-luna",
+	"gpt-6-astra",
+	"gpt-6-sol",
 	"claude-opus-4.8",
 	"claude-sonnet-5",
 	"claude-sonnet-4.6",
@@ -43,6 +46,9 @@ const MODEL_INFO = {
 	"gpt-5.5": { modelId: "gpt-5.5", provider: "openai" },
 	"gpt-5.6": { modelId: "gpt-5.6", provider: "openai" },
 	"gpt-5.6-terra": { modelId: "gpt-5.6-terra", provider: "openai" },
+	"gpt-6-luna": { modelId: "gpt-6-luna", provider: "openai" },
+	"gpt-6-astra": { modelId: "gpt-6-astra", provider: "openai" },
+	"gpt-6-sol": { modelId: "gpt-6-sol", provider: "openai" },
 	"claude-opus-4.8": {
 		modelId: "claude-opus-4-8",
 		provider: "anthropic",
@@ -131,6 +137,14 @@ export function getModelReasoningProviderOptions(
 					reasoningEffort: effort,
 				} satisfies OpenAIResponsesProviderOptions,
 			}
+		case "gpt-6-luna":
+		case "gpt-6-astra":
+		case "gpt-6-sol":
+			// The GPT-6 family is non-reasoning per the OpenAI SDK — sending
+			// reasoningEffort triggers a warning and is silently dropped. Run
+			// them flat; their capability comes from base model quality, not
+			// reasoning tokens.
+			return {}
 		case "claude-opus-4.8":
 		case "claude-sonnet-5":
 			return {

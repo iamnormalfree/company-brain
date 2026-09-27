@@ -66,6 +66,9 @@ export async function writeMemory(
 		resetEpoch !== undefined &&
 		!isBrainMemoryResetEpochCurrent(agent, resetEpoch)
 	) {
+		console.warn(
+			`[brain-memory] writeMemory ABORTED: reset epoch stale (captured=${resetEpoch}, current=${getBrainMemoryResetEpoch(agent)}) title="${doc.title}"`,
+		)
 		return { written: false }
 	}
 	let effectiveDoc = doc
@@ -150,7 +153,12 @@ export async function writeMemory(
 				}),
 			),
 		)
-		if (!isSuccessfulMemoryWrite(result)) return { written: false }
+		if (!isSuccessfulMemoryWrite(result)) {
+			console.warn(
+				`[brain-memory] writeMemory ABORTED: addMemorySingle failed title="${doc.title}" status=${result.status} error=${result.error ?? "-"}`,
+			)
+			return { written: false }
+		}
 		if (agent) {
 			if (
 				resetEpoch === undefined ||

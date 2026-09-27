@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .dev.vars
+.env.dev
+.env.local
 .wrangler/
 .DS_Store
 dist-brain/
