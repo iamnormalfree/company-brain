@@ -16,31 +16,34 @@ Under the hood these are supermemory container tags in the account your deployme
 
 ## What a conversation can read
 
-Writing is narrow; reading is broader, and it widens the more private the room is:
+Writing is narrow; reading is **strictly per-scope**: every question reads only the memory of the room it's asked in. Cross-scope reads are not permitted by the read path; earlier versions of Company Brain widened the read surface based on asker access, but that leaked private-channel bodies into DMs and was changed to a strict-per-scope mapping.
 
 | Asking from | Can read |
 |---|---|
-| A public channel | Public channel memory |
-| A private channel | That channel's memory + public channel memory |
-| A DM with the bot | Your employee memory + public channel memory + every private channel memory you belong to |
+| A public channel | Public channel memory only |
+| A private channel | That channel's memory only |
+| A DM with the bot | Your employee memory only |
 
 ```mermaid
 flowchart LR
     Pub["Public channel memory<br/>(the whole org)"]
     Priv["Private channel memory<br/>(that room's members)"]
     Emp["Employee memory<br/>(you, in DM)"]
+    DM_ask["DM question"]
+    Priv_ask["Private channel question"]
+    Pub_ask["Public channel question"]
 
-    Priv -.reads.-> Pub
-    Emp -.reads.-> Pub
-    Emp -.reads.-> Priv
+    DM_ask --> Emp
+    Priv_ask --> Priv
+    Pub_ask --> Pub
 ```
 
-A DM is the widest seat in the room precisely because it's the most private one: the bot answers you there with everything *you* could see, stitched together. A public channel is the opposite: the whole org can read it, so it only ever draws on what the whole org is allowed to know.
+There is no scope that can read all three. A DM is the most private seat, not the widest.
 
-> [!NOTE]
-> If you're not in a private channel, its memory doesn't exist for you, not even by inference in a DM. The bot only ever reads with the asker's own access, so it can't surface something you couldn't otherwise see.
+> [!IMPORTANT]
+> If the channel can't be classified (the Slack event arrives without `channel_type` and `conversations.info` is unavailable), memory reads return nothing and memory writes bail. The bot will refuse rather than guess a scope.
 
-**Example:** you DM the bot asking "what did we decide about the Acme deal?" It can draw on the public `#sales` channel, the private `#acme-deal` channel if you're in it, and anything it's learned about you directly, and it'll cite which one the answer came from. Ask the same question in `#general`, a public channel, and it can only answer from what `#general` and other public channels already know. The private `#acme-deal` context simply isn't in scope there.
+**Example:** you DM the bot asking "what did we decide about the Acme deal?" With strict per-scope reads, a DM only sees your employee memory — anything the bot has learned about you directly. To ask about `#sales` (public) you have to ask in `#sales`. To ask about `#acme-deal` (private) you have to ask in `#acme-deal`. The earlier "DM stitches everything you can see" behavior was the privacy regression; this section documents the corrected contract.
 
 The **Graph** page in the app follows the same idea: it shows public channel memory plus your own employee memory, never a teammate's.
 

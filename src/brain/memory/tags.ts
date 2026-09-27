@@ -294,7 +294,17 @@ export function registerBrainMemoryTags(
 export function listBrainMemoryTags(
 	agent: CompanyBrainAgent,
 	params: {
-		/** Full read set (shared + scope + any DM-accessible channels). */
+		/**
+		 * Full read set (caller-derived). Used to be SHARED + scope-implied;
+		 * now exactly the scopes the caller is allowed to read. Caller is
+		 * expected to pass the result of `resolveBrainReadContainerTags`
+		 * (or equivalent) so that unknown-channel / DM-scope reads stay
+		 * within their readable containers. SHARED is no longer auto-added —
+		 * the 2026-09-27 audit found that auto-injection leaked shared tags
+		 * into unknown-channel turns via list_memory_tags, outline_memory_tree,
+		 * and profile-recall, even when memory-body reads were already
+		 * correctly returning [].
+		 */
 		currentContainerTags?: string[] | null
 		kinds?: BrainMemoryTagKind[]
 		limit?: number
@@ -306,7 +316,7 @@ export function listBrainMemoryTags(
 	)
 	const scopes = [
 		...new Set(
-			[SHARED_BRAIN_TAG_SCOPE, ...(params.currentContainerTags ?? [])]
+			(params.currentContainerTags ?? [])
 				.map((tag) => normalizeBrainTagScope(tag))
 				.filter((tag): tag is string => Boolean(tag)),
 		),

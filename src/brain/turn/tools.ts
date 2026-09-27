@@ -373,6 +373,7 @@ export async function assembleTurnTools(
 		...createCaptureTools(deps, capture, traceId, {
 			allowWrites: !passiveInvestigation,
 			env,
+			scope: slackLookup?.memoryScope,
 		}),
 		// Destructive bulk forget: interactive turns only, apply gated by approval.
 		...(passiveInvestigation || scheduledRun

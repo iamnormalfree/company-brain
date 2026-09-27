@@ -1,6 +1,6 @@
 import type { ToolSet } from "ai"
 import { captureException } from "@/lib/capture"
-import type { MemoryWriteback } from "../memory"
+import type { MemoryWriteback, SlackMemoryScope } from "../memory"
 import { MAX_BRAIN_MEMORY_DOCS_PER_TURN } from "../memory/tags"
 import { logPreview } from "../observability/log-utils"
 import { getMcpCatalogSlugs, isMcpCatalogSlug } from "../tools/mcp/catalog"
@@ -32,7 +32,17 @@ export function createCaptureTools(
 	deps: TurnDeps,
 	capture: TurnCapture,
 	traceId: string,
-	options?: { allowWrites?: boolean; env?: Env },
+	options?: {
+		allowWrites?: boolean
+		env?: Env
+		/**
+		 * Current Slack scope. The save_memory tool uses this to fail closed when
+		 * the scope is unknown_channel: the host skips persistence in that case,
+		 * so we surface the bail-out to the model (and through it to the user)
+		 * rather than handing back a misleading `{ saved: true }`.
+		 */
+		scope?: SlackMemoryScope
+	},
 ): ToolSet {
 	const tools: ToolSet = {}
 	if (options?.allowWrites === false) return tools
@@ -45,6 +55,19 @@ export function createCaptureTools(
 				"memories" in input
 					? input.memories
 					: (input as unknown as MemoryWriteback)
+			// Fail closed on unknown_channel: the host cannot determine which
+			// container to write to, so the write site would silently skip.
+			// Tell the model the truth so it can tell the user.
+			if (options?.scope?.kind === "unknown_channel") {
+				console.log(
+					`[kongming][${traceId}] save_memory refused: scope kind=unknown_channel channelId="${options.scope.channelId ?? ""}"`,
+				)
+				return {
+					saved: false,
+					reason: "scope_unknown_channel",
+					message: `Could not save to memory: the channel couldn't be classified, so I don't know which container is safe. Try again in a DM, a known private channel, or ask an admin to verify the Slack app's events.`,
+				}
+			}
 			capture.memory = memory
 			const first = Array.isArray(memory) ? memory[0] : memory
 			console.log(
