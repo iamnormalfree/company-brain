@@ -2,7 +2,7 @@ import type { SlackTurnMessage } from "../slack/events"
 import type { TurnControlSnapshot } from "../slack/turn-control"
 import type { TurnTerminalProposal } from "./terminal"
 
-export const SLACK_TURN_FIBER_NAME = "company-brain-slack-turn"
+export const SLACK_TURN_FIBER_NAME = "kongming-slack-turn"
 export const MAX_SLACK_TURN_RECOVERY_ATTEMPTS = 1
 
 export type SlackTurnFiberPhase =

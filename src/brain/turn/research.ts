@@ -167,7 +167,7 @@ export async function researchHomepage(
 			? { url, markdown: markdown.slice(0, HOMEPAGE_EXCERPT_CHARS) }
 			: null
 	} catch (err) {
-		console.warn("[company-brain] research homepage scrape failed:", err)
+		console.warn("[kongming] research homepage scrape failed:", err)
 		return null
 	}
 }
@@ -211,7 +211,7 @@ export async function brainWebSearch(
 		).slice(0, 6)
 		return { summary: clean, sources }
 	} catch (err) {
-		console.warn("[company-brain] research web error:", err)
+		console.warn("[kongming] research web error:", err)
 		return null
 	}
 }
@@ -249,7 +249,7 @@ async function extractHighlights(
 			highlights: (out.highlights ?? []).slice(0, 6),
 		}
 	} catch (err) {
-		console.warn("[company-brain] extractHighlights error:", err)
+		console.warn("[kongming] extractHighlights error:", err)
 		return { stats: [], highlights: [] }
 	}
 }
@@ -275,7 +275,7 @@ function researchAspectCustomId(
 	aspect: string,
 	resetEpoch: number,
 ): string {
-	return `company-brain-research:${orgId}:${aspect}:epoch${resetEpoch}`
+	return `kongming-research:${orgId}:${aspect}:epoch${resetEpoch}`
 }
 
 function ensureResearchTables(agent: CompanyBrainAgent): void {
@@ -446,7 +446,7 @@ async function syncResearchCardNow(
 				run_id = excluded.run_id
 		`
 	} catch (err) {
-		console.warn("[company-brain] research card sync failed:", err)
+		console.warn("[kongming] research card sync failed:", err)
 	}
 }
 
@@ -579,7 +579,7 @@ export async function researchCompanyOnSignup(
 	ensureResearchTables(agent)
 	const status = researchStatus(agent)
 	console.log(
-		`[company-brain] researchCompanyOnSignup org=${agent.name} domain=${input.domain} existingStatus=${status} force=${input.force ?? false}`,
+		`[kongming] researchCompanyOnSignup org=${agent.name} domain=${input.domain} existingStatus=${status} force=${input.force ?? false}`,
 	)
 	// Treat queued like running — a scheduled task is already in flight; restarting
 	// would bump run_id and strand the active task after the fast setup steps.
@@ -608,7 +608,7 @@ export async function researchCompanyOnSignup(
 		throw err
 	}
 	console.log(
-		`[company-brain] research scheduled for org=${agent.name} runId=${runId}`,
+		`[kongming] research scheduled for org=${agent.name} runId=${runId}`,
 	)
 }
 
@@ -617,7 +617,7 @@ export async function runResearchTask(
 	payload: ResearchOnSignupInput,
 ): Promise<void> {
 	console.log(
-		`[company-brain] runResearchTask START org=${agent.name} domain=${payload?.domain}`,
+		`[kongming] runResearchTask START org=${agent.name} domain=${payload?.domain}`,
 	)
 	ensureResearchTables(agent)
 	const { domain, ownerId, runId } = payload
@@ -637,13 +637,13 @@ export async function runResearchTask(
 		return true
 	}
 	if (bailIfSuperseded()) {
-		console.log(`[company-brain] runResearchTask superseded org=${agent.name}`)
+		console.log(`[kongming] runResearchTask superseded org=${agent.name}`)
 		return
 	}
 	const org = await loadOrg(agent)
 	if (!org) {
 		console.error(
-			`[company-brain] research: no org found for id "${agent.name}"`,
+			`[kongming] research: no org found for id "${agent.name}"`,
 		)
 		// No org row to research against — leave a terminal status, not "queued".
 		if (isCurrent()) setResearchStatus(agent, "error", { domain, findings })
@@ -755,7 +755,7 @@ export async function runResearchTask(
 				await syncResearchCard(agent, orgName, false)
 			} catch (err) {
 				console.error(
-					`[company-brain] research aspect "${aspect.key}" failed:`,
+					`[kongming] research aspect "${aspect.key}" failed:`,
 					err,
 				)
 				if (bailIfSuperseded()) return
@@ -781,7 +781,7 @@ export async function runResearchTask(
 		// Any failure outside the per-aspect catch must leave a terminal state, else
 		// status stays "running" and /start refuses to retry (alreadyRunning) forever.
 		console.error(
-			`[company-brain] research task failed org=${agent.name}:`,
+			`[kongming] research task failed org=${agent.name}:`,
 			err,
 		)
 		if (isCurrent()) setResearchStatus(agent, "error", { domain, findings })

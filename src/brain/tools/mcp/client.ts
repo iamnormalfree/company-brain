@@ -62,7 +62,7 @@ export async function connectMcpClient(
 
 	const client = new Client(
 		{
-			name: "supermemory-company-brain",
+			name: "supermemory-kongming",
 			version: "1.0.0",
 		},
 		{
@@ -136,7 +136,7 @@ export async function callMcpTool(
 		return await handle.client.callTool(params, undefined, options)
 	} catch (err) {
 		if (!opts?.retryOnTimeout || !isTimeoutError(err)) throw err
-		console.warn(`[company-brain] mcp tool ${name} timed out; retrying once`)
+		console.warn(`[kongming] mcp tool ${name} timed out; retrying once`)
 		return handle.client.callTool(params, undefined, options)
 	}
 }

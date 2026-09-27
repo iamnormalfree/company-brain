@@ -72,7 +72,7 @@ Do **not** use the dashboard's "Install App" button. Installation happens throug
 1. Open `https://app.dev.supermemory.ai`, sign up, then go to `/brain`.
 2. Follow the Company Brain onboarding. It creates the org, attaches the trial and billing products, and offers **Add to Slack**.
 3. The Slack OAuth screen opens for your app. Pick your **sandbox** workspace and allow.
-4. You land back in the app, and the bot creates or adopts `#company-brain` in your sandbox.
+4. You land back in the app, and the bot creates or adopts `#kongming` in your sandbox.
 
 ## 5. Verify
 

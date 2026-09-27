@@ -70,7 +70,7 @@ export class ToolError extends Error {
 		this.detail = bounded(init.detail, 2_000)
 		this.traceId = init.traceId
 		console.warn(
-			`[company-brain][${init.traceId ?? "no-trace"}] ToolError kind=${init.kind} tool=${init.tool}`,
+			`[kongming][${init.traceId ?? "no-trace"}] ToolError kind=${init.kind} tool=${init.tool}`,
 		)
 	}
 

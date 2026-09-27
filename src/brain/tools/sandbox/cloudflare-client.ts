@@ -22,7 +22,7 @@ const SLEEP_AFTER = "30m"
 
 // Written when a sandbox is set up. A container that woke from sleep starts
 // from the image again and won't have it, so the session gets recreated.
-const READY_MARKER = "/workspace/.company-brain-ready"
+const READY_MARKER = "/workspace/.kongming-ready"
 
 // Tool paths are relative to the sandbox root, as they were on Daytona, where
 // the default working directory is "workspace".

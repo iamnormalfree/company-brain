@@ -168,7 +168,7 @@ export async function maybeSplitNode(
 			registerBrainMemoryTags(agent, containerTag, childTags)
 		}
 		console.log(
-			`[company-brain] split node="${nodePath}" members=${members.length} children=${childTags.length} moved=${moved}`,
+			`[kongming] split node="${nodePath}" members=${members.length} children=${childTags.length} moved=${moved}`,
 		)
 	} catch (err) {
 		captureException(err instanceof Error ? err : new Error(String(err)), {

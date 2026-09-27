@@ -180,7 +180,7 @@ async function leaseWorkspace(
 ): Promise<Awaited<ReturnType<typeof getWorkspaceByTeamId>> | undefined> {
 	if (request.orgId !== agent.name) {
 		console.error(
-			`[company-brain] lease delivery dropped: request belongs to another org request=${request.requestId} requestOrg=${request.orgId} agentOrg=${agent.name}`,
+			`[kongming] lease delivery dropped: request belongs to another org request=${request.requestId} requestOrg=${request.orgId} agentOrg=${agent.name}`,
 		)
 		return undefined
 	}
@@ -189,7 +189,7 @@ async function leaseWorkspace(
 	if (!workspace) return undefined
 	if (workspace.orgId !== agent.name) {
 		console.error(
-			`[company-brain] lease delivery dropped: workspace rebound request=${request.requestId} team=${request.teamId} requestOrg=${agent.name} currentOrg=${workspace.orgId}`,
+			`[kongming] lease delivery dropped: workspace rebound request=${request.requestId} team=${request.teamId} requestOrg=${agent.name} currentOrg=${workspace.orgId}`,
 		)
 		return undefined
 	}
@@ -784,12 +784,12 @@ async function runLeaseFollowUp(
 		}
 		if (leaseDeadline.aborted) {
 			console.warn(
-				`[company-brain][${traceId}] lease follow-up hit wall-clock deadline`,
+				`[kongming][${traceId}] lease follow-up hit wall-clock deadline`,
 			)
 			reply = `I got temporary access to ${serverDisplayName(request.serverSlug)}, but this is taking longer than usual so I paused here. Reply in the thread and I'll pick it back up.`
 		} else {
 			failed = true
-			console.error(`[company-brain][${traceId}] lease follow-up failed:`, err)
+			console.error(`[kongming][${traceId}] lease follow-up failed:`, err)
 			reply = `I got temporary access to ${serverDisplayName(request.serverSlug)}, but hit an error answering. Mind asking again in this thread?`
 		}
 	}

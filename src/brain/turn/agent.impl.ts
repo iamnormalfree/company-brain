@@ -192,7 +192,7 @@ export async function onStart(agent: CompanyBrainAgent): Promise<void> {
 	for (const repair of repairs) {
 		if (repair.status === "rejected") {
 			console.error(
-				"[company-brain] observer schedule repair failed:",
+				"[kongming] observer schedule repair failed:",
 				repair.reason,
 			)
 		}
@@ -204,7 +204,7 @@ export async function onStart(agent: CompanyBrainAgent): Promise<void> {
 			limit: 500,
 		})
 		.catch((error) => {
-			console.warn("[company-brain] settled fiber cleanup failed:", error)
+			console.warn("[kongming] settled fiber cleanup failed:", error)
 		})
 }
 
@@ -327,7 +327,7 @@ export async function onApprovalDecision(
 	try {
 		await runSlackApprovalDecision(agent, decision)
 	} catch (err) {
-		console.error("[company-brain] approval decision failed:", err)
+		console.error("[kongming] approval decision failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -340,7 +340,7 @@ export async function onLeaseDecision(
 	try {
 		await runSlackLeaseDecision(agent, decision)
 	} catch (err) {
-		console.error("[company-brain] lease decision failed:", err)
+		console.error("[kongming] lease decision failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -353,7 +353,7 @@ export async function onSkillDraftInteraction(
 	try {
 		await runSlackSkillDraftInteraction(agent, interaction)
 	} catch (err) {
-		console.error("[company-brain] skill draft interaction failed:", err)
+		console.error("[kongming] skill draft interaction failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -366,7 +366,7 @@ export async function runLeaseEscalation(
 	try {
 		await runLeaseEscalationImpl(agent, payload)
 	} catch (err) {
-		console.error("[company-brain] lease escalation failed:", err)
+		console.error("[kongming] lease escalation failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -379,7 +379,7 @@ export async function runApprovalExpiry(
 	try {
 		await runApprovalExpiryImpl(agent, payload)
 	} catch (err) {
-		console.error("[company-brain] approval expiry failed:", err)
+		console.error("[kongming] approval expiry failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -393,7 +393,7 @@ export function onConnectionRevoked(
 	const n = revokeLeasesForConnection(agent, connectionId)
 	if (n > 0) {
 		console.log(
-			`[company-brain] revoked ${n} lease(s) for deleted connection ${connectionId}`,
+			`[kongming] revoked ${n} lease(s) for deleted connection ${connectionId}`,
 		)
 	}
 }
@@ -412,7 +412,7 @@ export async function onSlackConnectComplete(
 	try {
 		await runSlackConnectComplete(agent, completion)
 	} catch (err) {
-		console.error("[company-brain] slack connect completion failed:", err)
+		console.error("[kongming] slack connect completion failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -455,7 +455,7 @@ export async function onSlackEvent(
 		await maybeNudgeInstallTools(agent, msg)
 	} catch (err) {
 		markFailedTriageClaim(agent, msg)
-		console.error("[company-brain] runTurn failed:", err)
+		console.error("[kongming] runTurn failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -469,7 +469,7 @@ export async function onSlackChimeIn(
 		await runSlackChimeIn(agent, msg)
 	} catch (err) {
 		markFailedTriageClaim(agent, msg)
-		console.error("[company-brain] runSlackChimeIn failed:", err)
+		console.error("[kongming] runSlackChimeIn failed:", err)
 	} finally {
 		await flushBrainTelemetry()
 	}
@@ -517,7 +517,7 @@ export async function onSlackContextEvent(
 			)
 		}
 	} catch (err) {
-		console.error("[company-brain] onSlackContextEvent failed:", err)
+		console.error("[kongming] onSlackContextEvent failed:", err)
 	}
 }
 
@@ -529,10 +529,10 @@ export async function runPassiveReactionQueue(
 	try {
 		await runPassiveReactionQueueImpl(agent, payload, schedule)
 	} catch (err) {
-		console.error("[company-brain] reaction queue failed:", err)
+		console.error("[kongming] reaction queue failed:", err)
 	} finally {
 		await recoverPassiveReactionQueue(agent).catch((err) => {
-			console.error("[company-brain] reaction queue recovery failed:", err)
+			console.error("[kongming] reaction queue recovery failed:", err)
 		})
 		await flushBrainTelemetry()
 	}
@@ -549,7 +549,7 @@ export async function onSlackReaction(
 		}
 		await runSlackDebugReaction(agent, msg)
 	} catch (err) {
-		console.error("[company-brain] onSlackReaction failed:", err)
+		console.error("[kongming] onSlackReaction failed:", err)
 	}
 }
 
@@ -560,7 +560,7 @@ export async function onSlackMembershipEvent(
 	try {
 		await runSlackMembershipEvent(agent, msg)
 	} catch (err) {
-		console.error("[company-brain] runSlackMembershipEvent failed:", err)
+		console.error("[kongming] runSlackMembershipEvent failed:", err)
 	}
 }
 
@@ -571,7 +571,7 @@ export async function reconcileChannelMembership(
 	try {
 		await reconcileChannelMembershipImpl(agent, teamId)
 	} catch (err) {
-		console.error("[company-brain] reconcileChannelMembership failed:", err)
+		console.error("[kongming] reconcileChannelMembership failed:", err)
 	}
 }
 

@@ -35,7 +35,7 @@ export function createProgressTools(
 				// surfaced updates too.
 				if (posted && state) recordSurfacedUpdate(state, text)
 				console.log(
-					`[company-brain][${traceId}] post_update posted=${posted} text="${logPreview(text, 180)}"`,
+					`[kongming][${traceId}] post_update posted=${posted} text="${logPreview(text, 180)}"`,
 				)
 				return { posted }
 			},

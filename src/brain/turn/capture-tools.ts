@@ -48,7 +48,7 @@ export function createCaptureTools(
 			capture.memory = memory
 			const first = Array.isArray(memory) ? memory[0] : memory
 			console.log(
-				`[company-brain][${traceId}] save_memory count=${Array.isArray(memory) ? memory.length : 1} firstTitle="${logPreview(first?.title)}"`,
+				`[kongming][${traceId}] save_memory count=${Array.isArray(memory) ? memory.length : 1} firstTitle="${logPreview(first?.title)}"`,
 			)
 			return { saved: true }
 		},
@@ -115,7 +115,7 @@ export function createCaptureTools(
 				capture.connect = [...new Set([...(capture.connect ?? []), ...allowed])]
 				if (!capture.connect.length) capture.connect = null
 				console.log(
-					`[company-brain][${traceId}] connect_app slugs=${allowed.join(",") || "-"} manual=${manual.map((m) => m.slug).join(",") || "-"} blocked=${skipped.join(",") || "-"} unknown=${unknown.join(",") || "-"}`,
+					`[kongming][${traceId}] connect_app slugs=${allowed.join(",") || "-"} manual=${manual.map((m) => m.slug).join(",") || "-"} blocked=${skipped.join(",") || "-"} unknown=${unknown.join(",") || "-"}`,
 				)
 				return {
 					connecting: allowed,
@@ -161,7 +161,7 @@ export function reportLegacyStructuredReply(
 	if (typeof o.reply !== "string") return
 	captureException(new Error("Model emitted legacy structured reply JSON"), {
 		tags: {
-			component: "company-brain",
+			component: "kongming",
 			feature: "legacy-structured-reply",
 		},
 		extra: {

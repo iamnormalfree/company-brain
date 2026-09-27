@@ -38,7 +38,7 @@ async function probeModel(model: LanguageModel): Promise<BrainHealthCheck> {
 			abortSignal: AbortSignal.timeout(TIMEOUT_MS),
 			experimental_telemetry: {
 				isEnabled: true,
-				functionId: "company-brain-health",
+				functionId: "kongming-health",
 			},
 		})
 		const ok = Boolean(result.text.trim())
@@ -77,7 +77,7 @@ function reportFailures(health: BrainGatewayHealth): void {
 	}
 	for (const [name, check] of failures) {
 		captureException(
-			new Error(`[company-brain] health probe ${name} failed: ${check.error}`),
+			new Error(`[kongming] health probe ${name} failed: ${check.error}`),
 			{
 				tags: { feature: "company_brain" },
 				fingerprint: [`brain-health-${name}-failed`],

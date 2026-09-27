@@ -49,7 +49,7 @@ flowchart LR
 ## Main path (Slack answer)
 
 1. Admin installs Slack from an authenticated Supermemory org (`GET /brain/slack/oauth/install`).
-2. Bot token is encrypted into `slack_workspace`; bootstrap creates/adopts `#company-brain`.
+2. Bot token is encrypted into `slack_workspace`; bootstrap creates/adopts `#kongming`.
 3. Slack posts signed events to `POST /brain/slack/events`.
 4. Worker verifies signature, dedupes, resolves workspace → org, returns `{ok:true}`, dispatches with `waitUntil`.
 5. DO classifies: explicit turn / chime / context-only / lifecycle (`team_join`, `user_change`, …).

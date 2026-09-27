@@ -78,14 +78,14 @@ async function summarizeCompany(
 				env,
 			}).catch((err) => {
 				console.warn(
-					"[company-brain-billing] company_summary failed:",
+					"[kongming-billing] company_summary failed:",
 					err instanceof Error ? err.message : err,
 				)
 			})
 		}
 		return clean(result.text)
 	} catch (err) {
-		console.warn("[company-brain] company-summary xai error:", err)
+		console.warn("[kongming] company-summary xai error:", err)
 		return null
 	}
 }

@@ -20,7 +20,7 @@ export function createMcpDirectoryTool(args: {
 			execute: async ({ query }: { query: string }) => {
 				const result = searchMcpDirectory(query)
 				console.log(
-					`[company-brain][${traceId}] search_mcp_directory hits=${result.apps.length}/${result.totalMatches}`,
+					`[kongming][${traceId}] search_mcp_directory hits=${result.apps.length}/${result.totalMatches}`,
 				)
 				return result
 			},

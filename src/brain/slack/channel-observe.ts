@@ -271,7 +271,7 @@ function stableClusterCustomId(
 	const hash = createHash("sha256")
 		.update(`${orgId}:${key}:${fromTs}:${throughTs}:${index}:${resetEpoch}`)
 		.digest("hex")
-	return `company-brain-channel-observe:${hash}`
+	return `kongming-channel-observe:${hash}`
 }
 
 function getObserveCursor(
@@ -340,7 +340,7 @@ async function rearmOwnedChannelObserve(
 		)
 	} catch (err) {
 		queueChannelObserveRepair(agent, key)
-		console.error("[company-brain] channel-observe schedule failed:", err)
+		console.error("[kongming] channel-observe schedule failed:", err)
 		return
 	}
 	try {
@@ -355,7 +355,7 @@ async function rearmOwnedChannelObserve(
 		await agent.cancelSchedule(scheduled.id).catch(() => {})
 		queueChannelObserveRepair(agent, key)
 		console.error(
-			"[company-brain] channel-observe ownership handoff failed:",
+			"[kongming] channel-observe ownership handoff failed:",
 			err,
 		)
 		return
@@ -395,7 +395,7 @@ async function retryOwnedChannelObserve(
 			},
 		})
 		console.error(
-			`[company-brain] channel-observe retries exhausted channel=${payload.channel}`,
+			`[kongming] channel-observe retries exhausted channel=${payload.channel}`,
 			error instanceof Error ? error.name : "unknown",
 		)
 		return
@@ -478,7 +478,7 @@ async function reconcileChannelObserveRow(
 		return true
 	} catch (err) {
 		if (scheduled) await agent.cancelSchedule(scheduled.id).catch(() => {})
-		console.error("[company-brain] channel-observe repair failed:", err)
+		console.error("[kongming] channel-observe repair failed:", err)
 		return false
 	}
 }
@@ -495,7 +495,7 @@ function queueChannelObserveRepair(
 			}
 		})().catch((err) => {
 			console.error(
-				"[company-brain] channel-observe background repair failed:",
+				"[kongming] channel-observe background repair failed:",
 				err,
 			)
 		}),
@@ -706,7 +706,7 @@ async function attemptChannelObserveArm(
 			} catch {}
 			await agent.cancelSchedule(scheduled.id).catch(() => {})
 		}
-		console.error("[company-brain] channel-observe initial arm failed:", err)
+		console.error("[kongming] channel-observe initial arm failed:", err)
 		return false
 	}
 }
@@ -726,7 +726,7 @@ function queueChannelObserveArmRetry(
 				}
 			}
 		})().catch((err) => {
-			console.error("[company-brain] channel-observe arm repair failed:", err)
+			console.error("[kongming] channel-observe arm repair failed:", err)
 		}),
 	)
 }
@@ -1043,7 +1043,7 @@ async function processPendingBatch(
 		)
 		if (out.written !== out.total) return "retry"
 		console.log(
-			`[company-brain] channel-observe org=${ws.orgId} channel=${payload.channel} messages=${persisted.messageCount} clusters=${persisted.clusters.length} written=${out.written}/${out.total}`,
+			`[kongming] channel-observe org=${ws.orgId} channel=${payload.channel} messages=${persisted.messageCount} clusters=${persisted.clusters.length} written=${out.written}/${out.total}`,
 		)
 	}
 	if (!isOwned(agent, key, scheduleId)) return "stale"
@@ -1178,7 +1178,7 @@ export async function runChannelObserve(
 		await retryOwnedChannelObserve(agent, payload, key, schedule.id, err).catch(
 			(rearmError) => {
 				console.error(
-					"[company-brain] channel-observe retry arm failed:",
+					"[kongming] channel-observe retry arm failed:",
 					rearmError,
 				)
 			},

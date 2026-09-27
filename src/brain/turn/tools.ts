@@ -260,11 +260,11 @@ export async function assembleTurnTools(
 				: "public_channel"
 	const assembleStartedAt = Date.now()
 	console.log(
-		`[company-brain][${traceId}] assembleTurnTools start actorUser=${actor.userId ?? "-"} personalOnly=${actor.personalConnectionsOnly ? "yes" : "no"} scheduled=${scheduledRun ? "yes" : "no"} slackLookup=${slackLookup ? "yes" : "no"} memoryScope=${slackLookup?.memoryScope?.kind ?? "none"}`,
+		`[kongming][${traceId}] assembleTurnTools start actorUser=${actor.userId ?? "-"} personalOnly=${actor.personalConnectionsOnly ? "yes" : "no"} scheduled=${scheduledRun ? "yes" : "no"} slackLookup=${slackLookup ? "yes" : "no"} memoryScope=${slackLookup?.memoryScope?.kind ?? "none"}`,
 	)
 	if (slackLookup && actor.memberLookup !== "found") {
 		console.warn(
-			`[company-brain][${traceId}] refusing Slack turn for non-member org=${org.id} actorUser=${actor.userId ?? "-"} lookup=${actor.memberLookup ?? "unknown"}`,
+			`[kongming][${traceId}] refusing Slack turn for non-member org=${org.id} actorUser=${actor.userId ?? "-"} lookup=${actor.memberLookup ?? "unknown"}`,
 		)
 		return {
 			ready: false,
@@ -295,7 +295,7 @@ export async function assembleTurnTools(
 		execute: async ({ query, focus_tags }) => {
 			const t = Date.now()
 			console.log(
-				`[company-brain][${traceId}] search_company_brain start query="${logPreview(query)}"`,
+				`[kongming][${traceId}] search_company_brain start query="${logPreview(query)}"`,
 			)
 			const brain = await searchBrain(
 				agent,
@@ -312,10 +312,10 @@ export async function assembleTurnTools(
 				limit: 40,
 			})
 			console.log(
-				`[company-brain][${traceId}] search_company_brain finish ms=${Date.now() - t} total=${brain.total}`,
+				`[kongming][${traceId}] search_company_brain finish ms=${Date.now() - t} total=${brain.total}`,
 			)
 			console.log(
-				`[company-brain][${traceId}] search_company_brain result=${redactedPreview(formatted, 5000)}`,
+				`[kongming][${traceId}] search_company_brain result=${redactedPreview(formatted, 5000)}`,
 			)
 			return formatted
 		},
@@ -343,7 +343,7 @@ export async function assembleTurnTools(
 				!actor.readOnly,
 			)
 			console.log(
-				`[company-brain][${traceId}] resolve_entity ref="${logPreview(reference)}" ms=${Date.now() - t} ${resolved ? `canonical="${resolved.canonical}" domain=${resolved.domain ?? "-"} source=${resolved.source}` : "unresolved"}`,
+				`[kongming][${traceId}] resolve_entity ref="${logPreview(reference)}" ms=${Date.now() - t} ${resolved ? `canonical="${resolved.canonical}" domain=${resolved.domain ?? "-"} source=${resolved.source}` : "unresolved"}`,
 			)
 			return resolved ?? { unresolved: true, reference }
 		},
@@ -460,7 +460,7 @@ export async function assembleTurnTools(
 		: {}
 	Object.assign(tools, sandboxTools)
 	console.log(
-		`[company-brain][${traceId}] core tools ready sandboxAvailable=${Object.keys(sandboxTools).length ? "yes" : "no"} names=${Object.keys(tools).join(",")}`,
+		`[kongming][${traceId}] core tools ready sandboxAvailable=${Object.keys(sandboxTools).length ? "yes" : "no"} names=${Object.keys(tools).join(",")}`,
 	)
 	const schedulerTools =
 		slackLookup?.teamId && !scheduledRun && !passiveInvestigation
@@ -489,7 +489,7 @@ export async function assembleTurnTools(
 	Object.assign(tools, schedulerTools)
 	if (Object.keys(schedulerTools).length) {
 		console.log(
-			`[company-brain][${traceId}] scheduler tools available channel=${slackLookup?.channel} thread=${slackLookup?.threadTs}`,
+			`[kongming][${traceId}] scheduler tools available channel=${slackLookup?.channel} thread=${slackLookup?.threadTs}`,
 		)
 	}
 	// Admin/owner-only external reachout; every send suspends for approval.
@@ -519,7 +519,7 @@ export async function assembleTurnTools(
 				traceId,
 			),
 		)
-		console.log(`[company-brain][${traceId}] send_to available (admin)`)
+		console.log(`[kongming][${traceId}] send_to available (admin)`)
 	}
 	if (
 		slackLookup?.teamId &&
@@ -627,7 +627,7 @@ export async function assembleTurnTools(
 			execute: async (args) => {
 				const t = Date.now()
 				console.log(
-					`[company-brain][${traceId}] search_slack_channel intent=${args.intent} window=${args.window ?? "default"} channel=${args.channel ?? "current"} query="${logPreview(args.query ?? "")}"`,
+					`[kongming][${traceId}] search_slack_channel intent=${args.intent} window=${args.window ?? "default"} channel=${args.channel ?? "current"} query="${logPreview(args.query ?? "")}"`,
 				)
 				let lookupCtx = slackLookup
 				if (args.channel) {
@@ -673,7 +673,7 @@ export async function assembleTurnTools(
 				}
 				const result = await runSlackChannelLookup(lookupCtx, args)
 				console.log(
-					`[company-brain][${traceId}] search_slack_channel finish ms=${Date.now() - t} chars=${result.length}`,
+					`[kongming][${traceId}] search_slack_channel finish ms=${Date.now() - t} chars=${result.length}`,
 				)
 				return result
 			},
@@ -706,7 +706,7 @@ export async function assembleTurnTools(
 			execute: async (args) => {
 				const t = Date.now()
 				console.log(
-					`[company-brain][${traceId}] search_slack_channels query="${logPreview(args.query)}" channels=${args.channels?.join(",") ?? "auto"} window=${args.window ?? "default"}`,
+					`[kongming][${traceId}] search_slack_channels query="${logPreview(args.query)}" channels=${args.channels?.join(",") ?? "auto"} window=${args.window ?? "default"}`,
 				)
 				const result = await runSlackChannelsSearch(
 					env,
@@ -720,7 +720,7 @@ export async function assembleTurnTools(
 					args,
 				)
 				console.log(
-					`[company-brain][${traceId}] search_slack_channels finish ms=${Date.now() - t} chars=${result.length}`,
+					`[kongming][${traceId}] search_slack_channels finish ms=${Date.now() - t} chars=${result.length}`,
 				)
 				return result
 			},
@@ -752,7 +752,7 @@ export async function assembleTurnTools(
 		},
 	).catch((err) => {
 		console.warn(
-			`[company-brain][${traceId}] connected-app inventory unavailable: ${err instanceof Error ? err.message : String(err)}`,
+			`[kongming][${traceId}] connected-app inventory unavailable: ${err instanceof Error ? err.message : String(err)}`,
 		)
 		return []
 	})
@@ -794,12 +794,12 @@ export async function assembleTurnTools(
 					}
 				}
 				console.log(
-					`[company-brain][${traceId}] connected-app Code Mode ready servers=${runtime.servers.join(",")} tools=${Object.keys(runtime.tools).length} ms=${Date.now() - codeModeStartedAt}`,
+					`[kongming][${traceId}] connected-app Code Mode ready servers=${runtime.servers.join(",")} tools=${Object.keys(runtime.tools).length} ms=${Date.now() - codeModeStartedAt}`,
 				)
 			}
 		} catch (error) {
 			console.warn(
-				`[company-brain][${traceId}] connected-app Code Mode unavailable; using direct MCP fallback: ${error instanceof Error ? error.message : String(error)}`,
+				`[kongming][${traceId}] connected-app Code Mode unavailable; using direct MCP fallback: ${error instanceof Error ? error.message : String(error)}`,
 			)
 		} finally {
 			args.onPhaseLatency?.("connect", Date.now() - codeModeStartedAt)
@@ -810,7 +810,7 @@ export async function assembleTurnTools(
 		const mcpStartedAt = Date.now()
 		try {
 			console.log(
-				`[company-brain][${traceId}] direct MCP fallback setup start callbackUrl=${callbackUrl}`,
+				`[kongming][${traceId}] direct MCP fallback setup start callbackUrl=${callbackUrl}`,
 			)
 			const mcpRuntimeFactory = args.mcpRuntimeFactory ?? createMcpRuntimeTools
 			const mcp: McpRuntimeTools = await mcpRuntimeFactory(
@@ -833,13 +833,13 @@ export async function assembleTurnTools(
 				hasApps = true
 				connectedAppRouting = "direct"
 				console.log(
-					`[company-brain][${traceId}] direct MCP fallback ready servers=${mcp.servers.join(",")} tools=${Object.keys(mcp.tools).length} ms=${Date.now() - mcpStartedAt}`,
+					`[kongming][${traceId}] direct MCP fallback ready servers=${mcp.servers.join(",")} tools=${Object.keys(mcp.tools).length} ms=${Date.now() - mcpStartedAt}`,
 				)
 			} else {
 				await mcp.close()
 				mcpClose = undefined
 				console.log(
-					`[company-brain][${traceId}] direct MCP fallback no_active_servers ms=${Date.now() - mcpStartedAt}`,
+					`[kongming][${traceId}] direct MCP fallback no_active_servers ms=${Date.now() - mcpStartedAt}`,
 				)
 			}
 		} catch (err) {
@@ -847,7 +847,7 @@ export async function assembleTurnTools(
 			await mcpClose?.().catch(() => {})
 			mcpClose = undefined
 			console.warn(
-				`[company-brain][${traceId}] direct MCP fallback unavailable: ${err instanceof Error ? err.message : String(err)}`,
+				`[kongming][${traceId}] direct MCP fallback unavailable: ${err instanceof Error ? err.message : String(err)}`,
 			)
 		} finally {
 			args.onPhaseLatency?.("connect", Date.now() - mcpStartedAt)
@@ -913,7 +913,7 @@ export async function assembleTurnTools(
 		execute: async ({ families }) => {
 			const result = toolDiscovery.unlock(families)
 			console.log(
-				`[company-brain][${traceId}] enable_tool_family requested=${families.join(",")} enabled=${toolDiscovery.enabledFamilies().join(",") || "-"}`,
+				`[kongming][${traceId}] enable_tool_family requested=${families.join(",")} enabled=${toolDiscovery.enabledFamilies().join(",") || "-"}`,
 			)
 			return {
 				families: result,
@@ -924,7 +924,7 @@ export async function assembleTurnTools(
 	})
 	const activeToolNames = toolDiscovery.activeToolNames(Object.keys(tools))
 	console.log(
-		`[company-brain][${traceId}] assembleTurnTools finish hasApps=${hasApps ? "yes" : "no"} activeToolCount=${activeToolNames.length} hiddenToolCount=${Object.keys(tools).length - activeToolNames.length} activeTools=${activeToolNames.join(",")} lazyFamilies=${toolDiscovery.availableFamilies().join(",") || "-"} ms=${Date.now() - assembleStartedAt}`,
+		`[kongming][${traceId}] assembleTurnTools finish hasApps=${hasApps ? "yes" : "no"} activeToolCount=${activeToolNames.length} hiddenToolCount=${Object.keys(tools).length - activeToolNames.length} activeTools=${activeToolNames.join(",")} lazyFamilies=${toolDiscovery.availableFamilies().join(",") || "-"} ms=${Date.now() - assembleStartedAt}`,
 	)
 
 	return {

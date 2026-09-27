@@ -69,7 +69,7 @@ export async function settleTurn<
 		control: args.coordination.control,
 		consumeUpdates: args.adapter.liveUpdates.consume,
 		abortSignal: args.abortSignal,
-		ignoredUpdateLog: `[company-brain][${args.coordination.traceId}] ${args.coordination.origin === "approval_resume" ? "approval " : ""}finalization retry after ignored live update`,
+		ignoredUpdateLog: `[kongming][${args.coordination.traceId}] ${args.coordination.origin === "approval_resume" ? "approval " : ""}finalization retry after ignored live update`,
 	})
 	if (claim.status === "claimed") {
 		return { status: "publish", candidate }

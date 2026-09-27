@@ -10,7 +10,7 @@ The Q2 roadmap lives in Notion. Nobody wants to dig for the link mid-conversatio
 
 > **#product**
 >
-> **You:** @company-brain what's in our Q2 roadmap?
+> **You:** @kongming what's in our Q2 roadmap?
 >
 > **Company Brain:** Three themes for Q2:
 > 1. **Company Brain GA**: Slack bot, connectors, automations

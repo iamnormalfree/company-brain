@@ -499,7 +499,7 @@ export async function findApprovalRequests(result: {
 		// report "no approval" so the caller falls through to deterministic reply
 		// selection instead of throwing past it.
 		console.warn(
-			"[company-brain] approval detection skipped (stream error):",
+			"[kongming] approval detection skipped (stream error):",
 			err,
 		)
 		return []

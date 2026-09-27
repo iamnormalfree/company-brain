@@ -471,7 +471,7 @@ export function recordStoredSuppression(
 			AND event_ts = ${identity.messageTs}
 	`
 	console.log(
-		`[company-brain] proactivity suppressed reason=${args.suppression} team=${identity.teamId} channel=${identity.channel} message=${identity.messageTs} fallback=${args.fallbackUsed === true}`,
+		`[kongming] proactivity suppressed reason=${args.suppression} team=${identity.teamId} channel=${identity.channel} message=${identity.messageTs} fallback=${args.fallbackUsed === true}`,
 	)
 }
 

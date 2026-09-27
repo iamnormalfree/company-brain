@@ -113,7 +113,7 @@ export async function writeMemory(
 	const program = addMemorySingle({
 		org: { id: org.id, name: org.name, metadata: org.metadata },
 		userId,
-		source: "company-brain",
+		source: "kongming",
 		executionCtx,
 		requestParams: {
 			content: request.content,

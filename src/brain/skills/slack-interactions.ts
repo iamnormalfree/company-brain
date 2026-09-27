@@ -200,7 +200,7 @@ export async function runSlackSkillDraftInteraction(
 		claimed.createdSkillId = skill.id
 		if (!finishClaimedSkillDraft(agent, claimed)) {
 			console.warn(
-				`[company-brain] skill draft completion claim lost org=${agent.name} draft=${draft.id} skill=${skill.id}`,
+				`[kongming] skill draft completion claim lost org=${agent.name} draft=${draft.id} skill=${skill.id}`,
 			)
 		}
 		const savedMessage =

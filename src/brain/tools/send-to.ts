@@ -209,7 +209,7 @@ export function createSendToTools(
 					)
 				`
 				console.log(
-					`[company-brain][${traceId}] send_to delivered kind=${targetKind} target=${targetId} initiator=${ctx.initiatorSlackUserId} chars=${message.length} preview="${logPreview(message)}"`,
+					`[kongming][${traceId}] send_to delivered kind=${targetKind} target=${targetId} initiator=${ctx.initiatorSlackUserId} chars=${message.length} preview="${logPreview(message)}"`,
 				)
 				return {
 					sent: true,

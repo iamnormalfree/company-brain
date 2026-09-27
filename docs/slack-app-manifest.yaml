@@ -1,7 +1,7 @@
 # Slack app manifest for a personal Company Brain dev app.
 # Mirror of the prod app manifest, with dev URLs and naming.
 # Usage: https://api.slack.com/apps -> Create New App -> From a manifest -> pick your
-# sandbox workspace -> paste this file. See docs/company-brain/local-dev.md.
+# sandbox workspace -> paste this file. See docs/kongming/local-dev.md.
 #
 # Before pasting, replace:
 #   YOUR-TUNNEL.ngrok-free.app  -> your public tunnel hostname (Slack server -> your machine)

@@ -201,7 +201,7 @@ export class BrainCostLedger {
 		}
 
 		console.warn(
-			`[company-brain-billing] no cost for model=${model} (tokens in=${tokens.inputTokens} out=${tokens.outputTokens})`,
+			`[kongming-billing] no cost for model=${model} (tokens in=${tokens.inputTokens} out=${tokens.outputTokens})`,
 		)
 		this.entries.push({
 			model,
@@ -301,7 +301,7 @@ export async function chargeBrainLlmCost(params: {
 		)
 		.join(" ")
 	console.log(
-		`[company-brain-cost] source=${params.source} org=${params.orgId} trace=${params.traceId ?? "-"} usd=${usd.toFixed(6)} ${breakdown}`,
+		`[kongming-cost] source=${params.source} org=${params.orgId} trace=${params.traceId ?? "-"} usd=${usd.toFixed(6)} ${breakdown}`,
 	)
 	return { usd, ops: 0, tracked: 0 }
 }
@@ -325,7 +325,7 @@ export function scheduleChargeBrainLlmCost(params: {
 		.then((result) => result.ops)
 		.catch((err) => {
 			console.warn(
-				`[company-brain-cost] source=${params.source} org=${params.orgId} trace=${params.traceId ?? "-"} cost report failed:`,
+				`[kongming-cost] source=${params.source} org=${params.orgId} trace=${params.traceId ?? "-"} cost report failed:`,
 				err instanceof Error ? err.message : err,
 			)
 			return 0

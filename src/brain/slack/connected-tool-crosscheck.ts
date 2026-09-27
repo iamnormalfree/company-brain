@@ -194,7 +194,7 @@ export async function crosscheckThemesWithConnectedTools(
 			env,
 		}).catch((err) => {
 			console.warn(
-				"[company-brain-billing] connected_tool_crosscheck failed:",
+				"[kongming-billing] connected_tool_crosscheck failed:",
 				err instanceof Error ? err.message : err,
 			)
 		})
@@ -260,7 +260,7 @@ export async function crosscheckThemesWithConnectedTools(
 		}
 	} catch (error) {
 		console.warn(
-			`[company-brain] public-channel tool crosscheck failed trace=${traceId} type=${error instanceof Error ? error.name : "unknown"}`,
+			`[kongming] public-channel tool crosscheck failed trace=${traceId} type=${error instanceof Error ? error.name : "unknown"}`,
 		)
 		return {
 			checks: defaultChecks(

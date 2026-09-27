@@ -239,11 +239,11 @@ export async function enqueuePassiveReaction(
 		const telemetryReason = breaker.opened ? "breaker_tripped" : "breaker"
 		if (breaker.opened) {
 			console.error(
-				`[company-brain] passive reaction breaker tripped channel=${args.identity.channel} trace=${args.obs.traceId}`,
+				`[kongming] passive reaction breaker tripped channel=${args.identity.channel} trace=${args.obs.traceId}`,
 			)
 		} else {
 			console.warn(
-				`[company-brain] passive reaction breaker open channel=${args.identity.channel} trace=${args.obs.traceId}`,
+				`[kongming] passive reaction breaker open channel=${args.identity.channel} trace=${args.obs.traceId}`,
 			)
 		}
 		agent.waitUntil(
@@ -266,7 +266,7 @@ export async function enqueuePassiveReaction(
 	`
 	recordStoredActionOutcome(agent, args.identity, "reaction_queued")
 	console.log(
-		`[company-brain] passive reaction queued kind=${args.kind} emoji=${args.emoji} trace=${args.obs.traceId} channel=${args.identity.channel} message=${args.identity.messageTs}`,
+		`[kongming] passive reaction queued kind=${args.kind} emoji=${args.emoji} trace=${args.obs.traceId} channel=${args.identity.channel} message=${args.identity.messageTs}`,
 	)
 	await armReactionQueue(agent)
 	return { enqueued: true }
@@ -350,7 +350,7 @@ export async function runPassiveReactionQueue(
 		`
 		recordStoredActionOutcome(agent, rowIdentity(row), "reaction_expired")
 		console.log(
-			`[company-brain] passive reaction expired kind=${row.kind} emoji=${row.emoji} trace=${row.trace_id} channel=${row.channel_id} message=${row.message_ts}`,
+			`[kongming] passive reaction expired kind=${row.kind} emoji=${row.emoji} trace=${row.trace_id} channel=${row.channel_id} message=${row.message_ts}`,
 		)
 		await armReactionQueue(agent)
 		return
@@ -383,7 +383,7 @@ export async function runPassiveReactionQueue(
 			outcome: "reaction_dropped_workspace_rebound",
 		})
 		console.error(
-			`[company-brain] passive reaction dropped: workspace rebound team=${row.team_id} queuedOrg=${agent.name} currentOrg=${ws.orgId} trace=${row.trace_id}`,
+			`[kongming] passive reaction dropped: workspace rebound team=${row.team_id} queuedOrg=${agent.name} currentOrg=${ws.orgId} trace=${row.trace_id}`,
 		)
 		agent.waitUntil(
 			captureReactionSuppression(
@@ -419,7 +419,7 @@ export async function runPassiveReactionQueue(
 		`
 		recordStoredActionOutcome(agent, rowIdentity(row), result.outcome)
 		console.log(
-			`[company-brain] passive reaction delivered kind=${row.kind} emoji=${row.emoji} outcome=${result.outcome} trace=${row.trace_id} channel=${row.channel_id} message=${row.message_ts}`,
+			`[kongming] passive reaction delivered kind=${row.kind} emoji=${row.emoji} outcome=${result.outcome} trace=${row.trace_id} channel=${row.channel_id} message=${row.message_ts}`,
 		)
 		if (row.kind === "ack" && ws) {
 			scheduleTriageOutcome(agent, rowObs(row, ws.orgId), {
@@ -447,7 +447,7 @@ export async function runPassiveReactionQueue(
 		`
 		recordStoredActionOutcome(agent, rowIdentity(row), "reaction_failed")
 		console.warn(
-			`[company-brain] passive reaction failed kind=${row.kind} emoji=${row.emoji} error=${result.error} trace=${row.trace_id} channel=${row.channel_id} message=${row.message_ts}`,
+			`[kongming] passive reaction failed kind=${row.kind} emoji=${row.emoji} error=${result.error} trace=${row.trace_id} channel=${row.channel_id} message=${row.message_ts}`,
 		)
 		if (row.kind === "ack" && ws) {
 			scheduleTriageOutcome(agent, rowObs(row, ws.orgId), {

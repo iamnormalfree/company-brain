@@ -10,7 +10,7 @@ Someone missed the Acme call, or was there and forgot the outcome. They ask in S
 
 > **#sales**
 >
-> **You:** @company-brain what did we decide in the meeting with Acme?
+> **You:** @kongming what did we decide in the meeting with Acme?
 >
 > **Company Brain:** Acme is moving to annual billing at the current rate, with a 90-day pilot on the enterprise SSO add-on. Follow-up owned by **Priya**, due Friday. *(from Granola notes, Acme QBR, Jun 11)*
 

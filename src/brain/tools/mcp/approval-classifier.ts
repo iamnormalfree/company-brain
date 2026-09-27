@@ -185,7 +185,7 @@ export function createMcpApprovalClassifier(args: {
 					})
 					const decision = getGenerateTextStructuredOutput(result, schema)
 					console.log(
-						`[company-brain][${args.traceId}] connected-app approval classified app=${input.serverSlug} method=${input.toolName} effect=${decision.effect} ms=${Date.now() - startedAt}`,
+						`[kongming][${args.traceId}] connected-app approval classified app=${input.serverSlug} method=${input.toolName} effect=${decision.effect} ms=${Date.now() - startedAt}`,
 					)
 					return {
 						effect: decision.effect,
@@ -193,7 +193,7 @@ export function createMcpApprovalClassifier(args: {
 					}
 				} catch (error) {
 					console.warn(
-						`[company-brain][${args.traceId}] connected-app approval classification unavailable app=${input.serverSlug} method=${input.toolName} ms=${Date.now() - startedAt} error=${error instanceof Error ? error.message : String(error)}`,
+						`[kongming][${args.traceId}] connected-app approval classification unavailable app=${input.serverSlug} method=${input.toolName} ms=${Date.now() - startedAt} error=${error instanceof Error ? error.message : String(error)}`,
 					)
 					return {
 						effect: "unknown",

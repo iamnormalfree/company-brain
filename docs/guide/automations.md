@@ -10,7 +10,7 @@ An automation is a prompt that runs on a schedule and posts the result somewhere
 
 > **#product**
 >
-> **You:** @company-brain every Monday at 9am, post a digest of what shipped last week and what's still open, to #product.
+> **You:** @kongming every Monday at 9am, post a digest of what shipped last week and what's still open, to #product.
 >
 > **Company Brain:** Got it, scheduled. First digest posts Monday, 9:00 AM, to #product.
 
@@ -72,10 +72,10 @@ An explicit @mention (or a DM) always skips this judgment call entirely: naming 
 Admins control this under **Configure → Proactivity**:
 
 - **All channels** (the default): it joins any conversation it's been added to when it can help.
-- **Only its own channel**: it speaks unprompted only in `#company-brain`; everywhere else it waits for an @mention or DM.
+- **Only its own channel**: it speaks unprompted only in `#kongming`; everywhere else it waits for an @mention or DM.
 - **Per-channel exceptions**: mark individual channels **Proactive** or **Quiet** to override the default.
 
-`#company-brain` is always proactive, and DMs and @mentions are never affected by these settings.
+`#kongming` is always proactive, and DMs and @mentions are never affected by these settings.
 
 > [!NOTE]
 > Automations and chime-in both write back to memory the same way a normal conversation does: a public channel's automation output lands in public channel memory, a private channel's chime-in stays scoped to that channel's memory.

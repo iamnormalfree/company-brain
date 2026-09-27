@@ -295,7 +295,7 @@ export function connectedAppRuntimeAvailable(
 	env: Env,
 	traceId?: string,
 ): boolean {
-	const logPrefix = traceId ? `[company-brain][${traceId}]` : "[company-brain]"
+	const logPrefix = traceId ? `[kongming][${traceId}]` : "[kongming]"
 	// Code runs in QuickJS and the runtime's state lives in this Durable
 	// Object's own storage (see the codemode patch), so all it needs is the DO.
 	try {
@@ -625,7 +625,7 @@ function maybeSimulateRuntimeReset(env: Env, traceId: string): void {
 	if (!flag || simulatedResetFired) return
 	simulatedResetFired = true
 	console.warn(
-		`[company-brain][${traceId}] SIMULATE_RUNTIME_RESET: throwing synthetic reset error`,
+		`[kongming][${traceId}] SIMULATE_RUNTIME_RESET: throwing synthetic reset error`,
 	)
 	throw new Error(
 		"SQL query failed: Durable Object reset because its code was updated. (simulated)",
@@ -985,7 +985,7 @@ export async function createConnectedAppRuntimeTools(args: {
 						isTransient: isTransientRuntimeReset,
 						onRetry: () =>
 							console.warn(
-								`[company-brain][${args.traceId}] connected-app runtime reset mid-program; retrying once`,
+								`[kongming][${args.traceId}] connected-app runtime reset mid-program; retrying once`,
 							),
 					})
 					return await terminalOrPaused({
@@ -1024,7 +1024,7 @@ export async function createConnectedAppRuntimeTools(args: {
 			.then((count) => {
 				if (count > 0) {
 					console.log(
-						`[company-brain][${args.traceId}] swept ${count} expired connected-app pause journal(s)`,
+						`[kongming][${args.traceId}] swept ${count} expired connected-app pause journal(s)`,
 					)
 				}
 			})

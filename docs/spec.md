@@ -110,7 +110,7 @@ New signups are paused: `POST /brain/trial/start` no longer calls `attachCompany
 
 The 14-day trial attaches `api_max` with 200 `usd_credits` and `cardRequired: true`, so the `company_brain` add-on is present during the trial and is **not** proof of payment. Nothing is granted while checkout is open: attach returns Autumn's `paymentUrl`, the org sits at `brainTrialStatus=pending_payment`, and the products webhook finalizes it once the base plan is live — claiming `pending_payment → finalizing` with a conditional UPDATE so duplicate deliveries cannot both provision. Conversion is recorded only when that webhook sees a paid base plan whose `trialEndsAt` has passed, alongside the add-on, at which point `markCompanyBrainConvertedIfPaid` sets `brainTrialStatus=converted`. Because a trial reports `status: "active"`, trial-versus-paid is decided on `trialEndsAt`, never on status alone.
 
-Finalizing the trial also sends the welcome email (`lifecycle/company-brain/welcome`). It goes to the one person who paid (`brainTrialInitiatedByUserId`, not every admin) and leads with the cal.com setup call rather than the app link, because roughly half of card-paying orgs never install Slack on their own. It is fired in `waitUntil` so it never blocks the 200, and it is gated on `features.email` like every other lifecycle email. There is no retry: `finalizeCompanyBrainTrialIfPaid` only returns `finalized: true` once, so a send that fails is reported to Sentry and that org simply does not get the email. The idempotency key `cb-welcome:<orgId>` covers duplicate Autumn deliveries.
+Finalizing the trial also sends the welcome email (`lifecycle/kongming/welcome`). It goes to the one person who paid (`brainTrialInitiatedByUserId`, not every admin) and leads with the cal.com setup call rather than the app link, because roughly half of card-paying orgs never install Slack on their own. It is fired in `waitUntil` so it never blocks the 200, and it is gated on `features.email` like every other lifecycle email. There is no retry: `finalizeCompanyBrainTrialIfPaid` only returns `finalized: true` once, so a send that fails is reported to Sentry and that org simply does not get the email. The idempotency key `cb-welcome:<orgId>` covers duplicate Autumn deliveries.
 
 Every trial-status transition is a conditional UPDATE (`patchTrialStatusWhere`): `exhausted` and `expired` only write while the row still reads `active`, and `converted` only writes when it is not already converted. A terminal trial state therefore cannot overwrite a paid conversion, whichever writer wins the race.
 
@@ -288,7 +288,7 @@ Route-level KV handles Slack event idempotency. `brain_bot_thread` records threa
 
 The opt-in public-channel rollout has its own local SQL state:
 
-- `brain_public_channel_rollout_card` identifies the single progress/action card in `#company-brain`.
+- `brain_public_channel_rollout_card` identifies the single progress/action card in `#kongming`.
 - `brain_public_channel_rollout` stores the current run, frozen seven-day window, actor, phase, Slack cursor, connected-app summary, and retry state.
 - `brain_public_channel_rollout_channel`, `_thread`, `_message`, and `_document` persist per-channel stages, thread cursors, normalized Slack messages, and submitted memory documents. This lets every alarm invocation perform one bounded unit and resume after eviction or rate limiting.
 - `brain_public_channel_introduction` is the cross-run exactly-once introduction ledger. A stable Slack `client_msg_id` handles an ambiguous retry between posting and recording success.
@@ -307,13 +307,13 @@ Future automatic member provisioning must reuse `slack_workspace_member` rather 
 
 ## Public-Channel Rollout
 
-OAuth bootstrap creates or adopts the public `#company-brain` home channel, posts a short multi-message welcome personalized with the installer's Slack display name, and then ensures the channel contains an **Add me to public channels** card. Welcome progress is stored in Durable Object SQL so a failed or repeated bootstrap resumes at the next message instead of replaying completed bubbles. The welcome links **Brain** for app setup and lets teammates know they can request a connection by naming a tool in Slack. The rollout card also explains that teams may invite Supermemory to individual channels themselves. The OAuth grant at install covers reading public channels, so shortly after install the bot also joins a small number of channels on its own (the beachhead below); the full-workspace rollout remains admin-initiated. The home-channel card is a read-only status surface — the button that starts the full rollout lives on the installer's DM copy, because a channel message renders identically for every viewer.
+OAuth bootstrap creates or adopts the public `#kongming` home channel, posts a short multi-message welcome personalized with the installer's Slack display name, and then ensures the channel contains an **Add me to public channels** card. Welcome progress is stored in Durable Object SQL so a failed or repeated bootstrap resumes at the next message instead of replaying completed bubbles. The welcome links **Brain** for app setup and lets teammates know they can request a connection by naming a tool in Slack. The rollout card also explains that teams may invite Supermemory to individual channels themselves. The OAuth grant at install covers reading public channels, so shortly after install the bot also joins a small number of channels on its own (the beachhead below); the full-workspace rollout remains admin-initiated. The home-channel card is a read-only status surface — the button that starts the full rollout lives on the installer's DM copy, because a channel message renders identically for every viewer.
 
 The signed Block Kit interaction is acknowledged immediately, then the org-scoped Durable Object:
 
 1. Resolves the clicker through the stable Slack member mapping, bootstrapping that mapping from an exact email match when possible, and requires the `admin` or `owner` role.
 2. Freezes the exact interval from click time minus seven days through click time and refreshes the shared Team Brain capture configuration.
-3. Pages through the current public-channel snapshot. It excludes `#company-brain`, `#general`, archived channels, private channels, and externally shared/Slack Connect channels.
+3. Pages through the current public-channel snapshot. It excludes `#kongming`, `#general`, archived channels, private channels, and externally shared/Slack Connect channels.
 4. Joins each eligible channel with `conversations.join`. Channels the bot already belongs to still receive the history backfill.
 5. Reads `conversations.history` and every discovered in-window root thread through cursor-aware, persisted pages. A Slack `429` is never slept through inside the Durable Object; the next alarm uses Slack's exact `Retry-After` value.
 6. Packs normalized messages into deterministic UTC-day Markdown documents, preserving roots and replies together, exact timestamps, Slack user ids, file names, and compact reaction counts. Message text uses the same shared legacy-attachment normalization as thread prompts and channel search (persisted into the rollout message store before packing), so attachment-only integration posts remain substantive. Bot-self messages, membership/topic system events, and empty noise are removed. Documents are capped and split at thread boundaries.
@@ -331,7 +331,7 @@ One scheduled callback performs one Slack page, join, model call, memory submiss
 ## Team Invite ("Add your team")
 
 Immediately after Slack OAuth, the installer DM announces that every eligible
-full workspace member is being added to `#company-brain`, provisioned with a
+full workspace member is being added to `#kongming`, provisioned with a
 Supermemory account, and sent a welcome DM. It explicitly says that guests and
 external members are excluded. The org Durable Object then starts an automatic,
 idempotent rollout. It reads one `users.list` cursor page per scheduled callback,
@@ -339,7 +339,7 @@ persists the next cursor and discovered targets in local SQL, and resumes after
 eviction or Slack rate limiting. Bots, deleted users, guests, Slack Connect
 users, and users whose home team differs from the installed workspace are
 excluded while each page is ingested. After account provisioning, the rollout
-invites one member at a time to `#company-brain` and then sends the existing
+invites one member at a time to `#kongming` and then sends the existing
 idempotent welcome DM. The DM contains the shared starter questions and
 member-scoped Linear and Notion connect actions. Those durable actions resolve
 the clicker's stable Slack identity mapping and mint fresh, short-lived OAuth
@@ -435,7 +435,7 @@ Research starts when the organization is created, not when Slack is installed. I
 
 The pass walks a fixed plan of six aspects — overview, products, people, work, competitors, and traction — after a few fast setup beats. The company's homepage is scraped once per run and shared as grounding by every aspect, so one credit replaces six repeat fetches. Each aspect is then one context.dev `web.search`, summarised by the fixed fast model against those results and the homepage excerpt, followed by a fast extraction of stats and highlight chips, and a memory write tagged under `company/<aspect>`. A summariser that cannot answer from the sources returns `NO_INFO` and the aspect is recorded as having no public information, so the pass never invents a finding.
 
-Progress renders in `#company-brain` as a single Slack native `plan` block with one `task_card` per aspect, posted top-level and edited in place. All six aspects are always rendered, merged onto the expected plan rather than only the ones that have started: Slack derives the plan's completion state from its tasks, so a card containing only finished tasks would show a completed header while research was still running. The card is synced when an aspect starts, when it completes, when it fails, and once at the end.
+Progress renders in `#kongming` as a single Slack native `plan` block with one `task_card` per aspect, posted top-level and edited in place. All six aspects are always rendered, merged onto the expected plan rather than only the ones that have started: Slack derives the plan's completion state from its tasks, so a card containing only finished tasks would show a completed header while research was still running. The card is synced when an aspect starts, when it completes, when it fails, and once at the end.
 
 Card identity lives in `brain_research_card`, a single row holding `message_ts`, `channel_id`, `block_id`, `team_id`, and `run_id`. The stored row is reused only when both the workspace and the run match. A reinstall into a different workspace, or a forced rerun, therefore posts a fresh card instead of editing a message that belongs to another workspace or another run. A research reset clears the row outright.
 

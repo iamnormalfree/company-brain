@@ -135,7 +135,7 @@ function scheduleSuppressionTelemetry(
 				await captureBrainProactivitySuppression({ ...obs, ...args })
 			} catch {
 				console.warn(
-					`[company-brain] proactivity suppression telemetry failed trace=${obs.traceId}`,
+					`[kongming] proactivity suppression telemetry failed trace=${obs.traceId}`,
 				)
 			}
 		})(),
@@ -182,7 +182,7 @@ async function warmLocalChannelContext(
 		}
 	} catch (error) {
 		console.warn(
-			`[company-brain] local channel context warmup failed channel=${args.channel} error=${error instanceof Error ? error.message : String(error)}`,
+			`[kongming] local channel context warmup failed channel=${args.channel} error=${error instanceof Error ? error.message : String(error)}`,
 		)
 	}
 }
@@ -397,12 +397,12 @@ async function runSlackChimeInForWorkspace(
 	})
 	if (!finalized) {
 		console.warn(
-			`[company-brain] channel chime discarded stale triage result team=${identity.teamId} channel=${identity.channel} message=${identity.messageTs}`,
+			`[kongming] channel chime discarded stale triage result team=${identity.teamId} channel=${identity.channel} message=${identity.messageTs}`,
 		)
 		return
 	}
 	console.log(
-		`[company-brain] channel chime triage=${triage.decision} source=${triage.source} priority=${"priority" in triage ? triage.priority : "-"} agentEffort=${"agentMainEffort" in triage ? (triage.agentMainEffort ?? "-") : "-"} trace=${traceId} org=${org.id} channel=${identity.channel} message=${identity.messageTs}`,
+		`[kongming] channel chime triage=${triage.decision} source=${triage.source} priority=${"priority" in triage ? triage.priority : "-"} agentEffort=${"agentMainEffort" in triage ? (triage.agentMainEffort ?? "-") : "-"} trace=${traceId} org=${org.id} channel=${identity.channel} message=${identity.messageTs}`,
 	)
 
 	if (triage.decision === "pass") {
@@ -519,13 +519,13 @@ export async function runSlackChimeIn(
 			: await getWorkspaceByTeamId(brainAgent(agent).env, msg.teamId)
 	if (!ws) {
 		console.warn(
-			`[company-brain] chime: no workspace for team ${msg.teamId}; dropping`,
+			`[kongming] chime: no workspace for team ${msg.teamId}; dropping`,
 		)
 		return
 	}
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain] chime dropped: workspace rebound team=${msg.teamId} chimeOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming] chime dropped: workspace rebound team=${msg.teamId} chimeOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		return
 	}
@@ -540,7 +540,7 @@ export async function runSlackChimeIn(
 	if (channel) {
 		agent.waitUntil(
 			armChannelObserve(agent, { teamId: msg.teamId, channel }).catch((err) => {
-				console.warn("[company-brain] channel-observe arm failed:", err)
+				console.warn("[kongming] channel-observe arm failed:", err)
 			}),
 		)
 	}

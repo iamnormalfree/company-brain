@@ -227,7 +227,7 @@ export async function observeInteractionStyle(
 
 	// resetEpoch scopes the id to a generation so an old-generation write cannot
 	// dedupe onto a post-reset document and then delete it as stale.
-	const customId = `company-brain-self-observe:${createHash("sha256")
+	const customId = `kongming-self-observe:${createHash("sha256")
 		.update(`${resetEpoch}:${note}`)
 		.digest("hex")
 		.slice(0, 40)}`
@@ -237,15 +237,15 @@ export async function observeInteractionStyle(
 			addMemorySingle({
 				org: { id: ws.orgId, name: "", metadata: null },
 				userId: installedByUserId,
-				source: "company-brain",
+				source: "kongming",
 				executionCtx: undefined,
 				requestParams: {
 					content: note,
 					customId,
 					containerTag: AGENT_SELF_CONTAINER_TAG,
 					metadata: {
-						sm_source: "company-brain",
-						source_type: "company-brain-self-observe",
+						sm_source: "kongming",
+						source_type: "kongming-self-observe",
 					},
 					taskType: "memory",
 				},
@@ -269,7 +269,7 @@ export async function observeInteractionStyle(
 			return "retry"
 		}
 		console.log(
-			`[company-brain] self-observe org=${ws.orgId} channel=${payload.channel} note="${note.slice(0, 80)}"`,
+			`[kongming] self-observe org=${ws.orgId} channel=${payload.channel} note="${note.slice(0, 80)}"`,
 		)
 		const carried = [cursor.carriedState, note]
 			.filter(Boolean)

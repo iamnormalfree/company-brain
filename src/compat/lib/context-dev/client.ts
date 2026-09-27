@@ -81,7 +81,7 @@ function logQuota(tag: string, tool: string, headers: Headers): void {
 	const limit = Number(headers.get("x-ratelimit-limit"))
 	const remaining = Number(headers.get("x-ratelimit-remaining"))
 	if (!Number.isFinite(limit) || !Number.isFinite(remaining)) return
-	const line = `[company-brain]${tag} context_quota tool=${tool} remaining=${remaining}/${limit}`
+	const line = `[kongming]${tag} context_quota tool=${tool} remaining=${remaining}/${limit}`
 	if (remaining <= limit * LOW_HEADROOM_RATIO) console.warn(`${line} LOW`)
 	else console.log(line)
 }
@@ -109,7 +109,7 @@ async function call<T>(
 				isRateLimited(error)
 					? Effect.sync(() =>
 							console.warn(
-								`[company-brain]${tag} ${tool} still rate limited after retries`,
+								`[kongming]${tag} ${tool} still rate limited after retries`,
 							),
 						)
 					: Effect.void,

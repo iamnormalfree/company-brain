@@ -105,7 +105,7 @@ export function createForgetMemoriesTool(params: {
 			}
 			const t = Date.now()
 			console.log(
-				`[company-brain][${traceId}] forget_memories start dryRun=${dryRun} containers=${containerTags.join(",")} query="${logPreview(query)}"`,
+				`[kongming][${traceId}] forget_memories start dryRun=${dryRun} containers=${containerTags.join(",")} query="${logPreview(query)}"`,
 			)
 			try {
 				const vectordb = await deps.Effect.runPromise(
@@ -137,7 +137,7 @@ export function createForgetMemoriesTool(params: {
 				const results = settled.flatMap((outcome, i) => {
 					if (outcome.status === "fulfilled") return [outcome.value]
 					console.error(
-						`[company-brain][${traceId}] forget_memories container=${containerTags[i]} failed:`,
+						`[kongming][${traceId}] forget_memories container=${containerTags[i]} failed:`,
 						outcome.reason instanceof Error
 							? outcome.reason.message
 							: outcome.reason,
@@ -161,7 +161,7 @@ export function createForgetMemoriesTool(params: {
 					.map((r) => r.forgetBatchId)
 					.filter((id): id is string => Boolean(id))
 				console.log(
-					`[company-brain][${traceId}] forget_memories finish dryRun=${dryRun} count=${count} batch=${batchIds.join(",") || "-"} partial=${partial} ms=${Date.now() - t}`,
+					`[kongming][${traceId}] forget_memories finish dryRun=${dryRun} count=${count} batch=${batchIds.join(",") || "-"} partial=${partial} ms=${Date.now() - t}`,
 				)
 				const partialNote = partial
 					? " One memory space couldn't be checked, so nothing there was touched."
@@ -200,7 +200,7 @@ export function createForgetMemoriesTool(params: {
 				}
 			} catch (error) {
 				console.error(
-					`[company-brain][${traceId}] forget_memories failed dryRun=${dryRun}:`,
+					`[kongming][${traceId}] forget_memories failed dryRun=${dryRun}:`,
 					error instanceof Error ? error.message : error,
 				)
 				return {

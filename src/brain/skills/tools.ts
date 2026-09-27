@@ -115,7 +115,7 @@ export function createSkillTools(
 				matchedVia,
 			})
 			console.log(
-				`[company-brain][${traceId}] load_skill id=${loaded.id} version=${loaded.version} matchedVia=${matchedVia}`,
+				`[kongming][${traceId}] load_skill id=${loaded.id} version=${loaded.version} matchedVia=${matchedVia}`,
 			)
 			return { name: loaded.name, body: loaded.body, version: loaded.version }
 		},
@@ -220,7 +220,7 @@ export function createSkillTools(
 					}
 				}
 				console.log(
-					`[company-brain][${traceId}] skill draft=${draft.id} requestedScope=${requestedScope ?? "unspecified"}`,
+					`[kongming][${traceId}] skill draft=${draft.id} requestedScope=${requestedScope ?? "unspecified"}`,
 				)
 				return {
 					status: requestedScope

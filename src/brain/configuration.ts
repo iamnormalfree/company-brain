@@ -266,7 +266,7 @@ export function createConfigurationTool(args: {
 				},
 			})
 			console.log(
-				`[company-brain][${traceId}] get_configuration ms=${Date.now() - t}`,
+				`[kongming][${traceId}] get_configuration ms=${Date.now() - t}`,
 			)
 			return configuration
 		},
@@ -388,7 +388,7 @@ async function applyConfigurationUpdate(
 	}
 	const result = await applyField(ctx, input)
 	console.log(
-		`[company-brain][${ctx.traceId}] update_configuration field=${input.field} updated=${result.updated} ms=${Date.now() - t}`,
+		`[kongming][${ctx.traceId}] update_configuration field=${input.field} updated=${result.updated} ms=${Date.now() - t}`,
 	)
 	return result
 }

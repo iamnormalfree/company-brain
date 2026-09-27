@@ -301,7 +301,7 @@ export async function runAdminChat(
 	if (out.status !== "completed") return { ok: false, error: out.status }
 
 	console.log(
-		`[company-brain] admin chat org=${org.id} scope=${person ? "person" : "org_shared"} surfaces=${wanted.length} trace=${traceId}`,
+		`[kongming] admin chat org=${org.id} scope=${person ? "person" : "org_shared"} surfaces=${wanted.length} trace=${traceId}`,
 	)
 	const reply = out.reply.trim()
 	return {

@@ -213,12 +213,12 @@ export async function requestAccessLease(
 		})
 		if (retired.invalidated > 0) {
 			console.log(
-				`[company-brain][${traceId}] retired personal connect offer server=${serverSlug} states=${retired.invalidated} cards=${retired.updatedCards}`,
+				`[kongming][${traceId}] retired personal connect offer server=${serverSlug} states=${retired.invalidated} cards=${retired.updatedCards}`,
 			)
 		}
 	} catch (error) {
 		console.warn(
-			`[company-brain][${traceId}] could not retire personal connect offer server=${serverSlug}:`,
+			`[kongming][${traceId}] could not retire personal connect offer server=${serverSlug}:`,
 			error,
 		)
 	}
@@ -346,7 +346,7 @@ export async function requestAccessLease(
 	} catch (error) {
 		markLeaseRequestTerminalIfPending(agent, request.requestId, "error")
 		console.warn(
-			`[company-brain][${traceId}] could not schedule lease request expiry:`,
+			`[kongming][${traceId}] could not schedule lease request expiry:`,
 			error,
 		)
 		await captureTerminalLeaseRequest({
@@ -395,7 +395,7 @@ export async function requestAccessLease(
 		return slackUserId ? [`<@${slackUserId}>`] : []
 	})
 	console.log(
-		`[company-brain][${traceId}] lease request ${request.requestId} server=${serverSlug} owners=${routed.deliveries.length}/${ownersFound} capped=${capped}`,
+		`[kongming][${traceId}] lease request ${request.requestId} server=${serverSlug} owners=${routed.deliveries.length}/${ownersFound} capped=${capped}`,
 	)
 	return {
 		status: "requested",

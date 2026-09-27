@@ -80,7 +80,7 @@ function slackAppBody(params: PageParams): string {
 	const manifestUrl = `https://api.slack.com/apps?new_app=1&manifest_json=${encodeURIComponent(JSON.stringify(params.manifest))}`
 	return `<ol>
 		<li><a class="btn" href="${escapeHtml(manifestUrl)}" target="_blank" rel="noreferrer">Create the Slack app</a><br>This opens Slack with the app already filled in for this deployment. Pick your workspace, then click <strong>Next</strong> and <strong>Create</strong>.</li>
-		<li>In the app Slack just created, stay on <strong>Basic Information</strong>. Scroll down to <strong>Display Information</strong> and upload the app icon, so the bot has its face in Slack: <a class="icon-download" href="/slack-icon.png" download="supermemory-company-brain.png"><img src="/slack-icon.png" alt="" width="40" height="40">Download the icon</a> Then click <strong>Save Changes</strong>.</li>
+		<li>In the app Slack just created, stay on <strong>Basic Information</strong>. Scroll down to <strong>Display Information</strong> and upload the app icon, so the bot has its face in Slack: <a class="icon-download" href="/slack-icon.png" download="kongming.png"><img src="/slack-icon.png" alt="" width="40" height="40">Download the icon</a> Then click <strong>Save Changes</strong>.</li>
 		<li>Scroll back up to <strong>App Credentials</strong> and copy the three values below into this form.</li>
 	</ol>
 	<p class="warn">Don't click <em>Install to Workspace</em> in Slack. You'll install from this page in step 4, which is how the brain learns about your workspace and sets itself up.</p>

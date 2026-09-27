@@ -116,7 +116,7 @@ export function createSandboxTools(args: CreateSandboxToolsArgs): ToolSet {
 				) {
 					const touched = touchSandboxSession(agent, existing)
 					console.log(
-						`[company-brain][${traceId}] sandbox_start reuse id=${touched.sandboxId} cwd=${touched.defaultCwd} repo=${touched.repoUrl ?? "-"}`,
+						`[kongming][${traceId}] sandbox_start reuse id=${touched.sandboxId} cwd=${touched.defaultCwd} repo=${touched.repoUrl ?? "-"}`,
 					)
 					return {
 						reused: true,
@@ -133,7 +133,7 @@ export function createSandboxTools(args: CreateSandboxToolsArgs): ToolSet {
 					deleteSandboxSession(agent, sessionKey)
 					const reason = scopeMatches ? "stale" : "repo-changed"
 					console.log(
-						`[company-brain][${traceId}] sandbox_start ${reason} id=${existing.sandboxId} repo=${existing.repoUrl ?? "-"} dropped; recreating`,
+						`[kongming][${traceId}] sandbox_start ${reason} id=${existing.sandboxId} repo=${existing.repoUrl ?? "-"} dropped; recreating`,
 					)
 				}
 
@@ -151,7 +151,7 @@ export function createSandboxTools(args: CreateSandboxToolsArgs): ToolSet {
 					goal,
 				})
 				console.log(
-					`[company-brain][${traceId}] sandbox_start created id=${session.sandboxId} cwd=${session.defaultCwd} repo=${created.repoUrl ?? "-"}`,
+					`[kongming][${traceId}] sandbox_start created id=${session.sandboxId} cwd=${session.defaultCwd} repo=${created.repoUrl ?? "-"}`,
 				)
 				return {
 					reused: false,
@@ -195,7 +195,7 @@ export function createSandboxTools(args: CreateSandboxToolsArgs): ToolSet {
 				// file IDs are no longer safe once execution resumes.
 				artifactUploads.clear()
 				console.log(
-					`[company-brain][${traceId}] sandbox_run id=${session.sandboxId} reason="${logPreview(reason)}" command="${logPreview(command)}"`,
+					`[kongming][${traceId}] sandbox_run id=${session.sandboxId} reason="${logPreview(reason)}" command="${logPreview(command)}"`,
 				)
 				const out = await client.runCommand({
 					sandboxId: session.sandboxId,

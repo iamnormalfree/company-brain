@@ -67,7 +67,7 @@ export async function sendAutoResearchDraft(
 	)
 	if (!entitlement.allowed) {
 		console.log(
-			`[company-brain] auto-research send blocked: entitlement org=${agent.name} reason=${entitlement.reason ?? "unknown"}`,
+			`[kongming] auto-research send blocked: entitlement org=${agent.name} reason=${entitlement.reason ?? "unknown"}`,
 		)
 		return {
 			ok: false,
@@ -83,7 +83,7 @@ export async function sendAutoResearchDraft(
 	// must never deliver one org's research into another org's Slack.
 	if (ws.orgId !== agent.name) {
 		console.warn(
-			`[company-brain] auto-research send blocked: workspace rebound team=${teamId} org=${agent.name} wsOrg=${ws.orgId}`,
+			`[kongming] auto-research send blocked: workspace rebound team=${teamId} org=${agent.name} wsOrg=${ws.orgId}`,
 		)
 		return { ok: false, error: "workspace_org_mismatch" }
 	}
@@ -105,7 +105,7 @@ export async function sendAutoResearchDraft(
 	if (!res.ok) {
 		releaseAutoResearchDraft(agent, draftId)
 		console.warn(
-			`[company-brain] auto-research send failed org=${agent.name} draft=${draftId}: ${res.error}`,
+			`[kongming] auto-research send failed org=${agent.name} draft=${draftId}: ${res.error}`,
 		)
 		return { ok: false, error: res.error ?? "slack_post_failed" }
 	}
@@ -119,7 +119,7 @@ export async function sendAutoResearchDraft(
 		pruneWatchTargets(agent)
 	}
 	console.log(
-		`[company-brain] auto-research sent org=${agent.name} draft=${draftId} kind=${draft.kind} channel=${channelId} ts=${res.ts}`,
+		`[kongming] auto-research sent org=${agent.name} draft=${draftId} kind=${draft.kind} channel=${channelId} ts=${res.ts}`,
 	)
 	return { ok: true, slackTs: res.ts, channelId }
 }

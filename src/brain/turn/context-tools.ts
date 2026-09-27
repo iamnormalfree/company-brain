@@ -105,7 +105,7 @@ export function createContextDiscoveryTools(args: {
 				containerTags: memoryContainerTags,
 			})
 			console.log(
-				`[company-brain][${traceId}] recall_tagged_memories query="${logPreview(query)}" found=${context ? "yes" : "no"}`,
+				`[kongming][${traceId}] recall_tagged_memories query="${logPreview(query)}" found=${context ? "yes" : "no"}`,
 			)
 			return context
 				? { found: true, context }
@@ -132,7 +132,7 @@ export function createContextDiscoveryTools(args: {
 				limit: outputLimit,
 			})
 			console.log(
-				`[company-brain][${traceId}] list_memory_tags count=${tags.length}`,
+				`[kongming][${traceId}] list_memory_tags count=${tags.length}`,
 			)
 			return { tags }
 		},
@@ -151,7 +151,7 @@ export function createContextDiscoveryTools(args: {
 				),
 			})
 			console.log(
-				`[company-brain][${traceId}] outline_memory_tree roots=${tree.length}`,
+				`[kongming][${traceId}] outline_memory_tree roots=${tree.length}`,
 			)
 			return { tree }
 		},
@@ -215,7 +215,7 @@ export function createContextDiscoveryTools(args: {
 				? page[page.length - 1]?.updatedAt.toISOString()
 				: undefined
 			console.log(
-				`[company-brain][${traceId}] read_memory_node path="${logPreview(path)}" before=${before ?? "-"} after=${after ?? "-"} returned=${memories.length} mappingCount=${fetched.mappingCount} more=${hasMore}`,
+				`[kongming][${traceId}] read_memory_node path="${logPreview(path)}" before=${before ?? "-"} after=${after ?? "-"} returned=${memories.length} mappingCount=${fetched.mappingCount} more=${hasMore}`,
 			)
 			if (!memories.length) {
 				// Distinguish "node has linked documents but supermemory hasn't
@@ -290,7 +290,7 @@ export function createContextDiscoveryTools(args: {
 						limit: outputLimit,
 					})
 					console.log(
-						`[company-brain][${traceId}] read_current_thread query="${logPreview(query ?? "(page)")}" returned=${selected.length} loaded=${entries.length} complete=${threadComplete ? "yes" : "no"}`,
+						`[kongming][${traceId}] read_current_thread query="${logPreview(query ?? "(page)")}" returned=${selected.length} loaded=${entries.length} complete=${threadComplete ? "yes" : "no"}`,
 					)
 					return {
 						complete: threadComplete,

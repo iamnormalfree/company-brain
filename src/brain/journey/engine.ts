@@ -133,7 +133,7 @@ export async function runJourneyTick(
 	try {
 		sent = await beat.send(agent, { state: decision.state })
 	} catch (err) {
-		console.warn(`[company-brain] journey beat "${rung}" failed:`, err)
+		console.warn(`[kongming] journey beat "${rung}" failed:`, err)
 	}
 	if (sent) {
 		recordBeat(agent, { rung, outcome: "sent" })

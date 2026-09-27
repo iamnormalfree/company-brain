@@ -208,7 +208,7 @@ export async function computeTurn(
 			}
 		: undefined
 	console.log(
-		`[company-brain][${traceId}] computeTurn start org=${org.id} user=${userId} model=${profile.name} effort=${profile.effort} question="${logPreview(question)}" threadChars=${threadText.length} attachments=${attachmentParts.length} directoryCount=${directory?.length ?? 0}`,
+		`[kongming][${traceId}] computeTurn start org=${org.id} user=${userId} model=${profile.name} effort=${profile.effort} question="${logPreview(question)}" threadChars=${threadText.length} attachments=${attachmentParts.length} directoryCount=${directory?.length ?? 0}`,
 	)
 	const state = createTurnState({
 		request: {
@@ -247,12 +247,12 @@ export async function computeTurn(
 				})
 		if (state.checkpoint) {
 			console.log(
-				`[company-brain][${traceId}] restored thread investigation methods=${state.checkpoint.discoveredMethods.length} evidence=${state.checkpoint.verifiedEvidence.length}`,
+				`[kongming][${traceId}] restored thread investigation methods=${state.checkpoint.discoveredMethods.length} evidence=${state.checkpoint.verifiedEvidence.length}`,
 			)
 		}
 	} catch (error) {
 		console.warn(
-			`[company-brain][${traceId}] thread investigation restore unavailable: ${error instanceof Error ? error.message : String(error)}`,
+			`[kongming][${traceId}] thread investigation restore unavailable: ${error instanceof Error ? error.message : String(error)}`,
 		)
 	}
 
@@ -434,11 +434,11 @@ export async function computeTurn(
 			workspacePrompt = getWorkspacePrompt(agent)
 		} catch {
 			console.warn(
-				`[company-brain][${traceId}] workspace_prompt lookup failed org=${org.id}`,
+				`[kongming][${traceId}] workspace_prompt lookup failed org=${org.id}`,
 			)
 		}
 		console.log(
-			`[company-brain][${traceId}] prompt context ready mode=lazy companyContext=${companyContext ? "yes" : "no"} ambientBrainProfile=${brainMemoryContext ? "yes" : "no"} interactionStyle=${interactionStyleProfile ? "yes" : "no"} workspacePrompt=${workspacePrompt ? "yes" : "no"} availableSkills=${availableSkills ? "yes" : "no"} directoryAvailable=${directory?.length ?? 0} hasApps=${hasApps ? "yes" : "no"}`,
+			`[kongming][${traceId}] prompt context ready mode=lazy companyContext=${companyContext ? "yes" : "no"} ambientBrainProfile=${brainMemoryContext ? "yes" : "no"} interactionStyle=${interactionStyleProfile ? "yes" : "no"} workspacePrompt=${workspacePrompt ? "yes" : "no"} availableSkills=${availableSkills ? "yes" : "no"} directoryAvailable=${directory?.length ?? 0} hasApps=${hasApps ? "yes" : "no"}`,
 		)
 		state.availableSkillIds = availableSkills?.skillIds ?? []
 		touchTurnState(state)
@@ -517,7 +517,7 @@ export async function computeTurn(
 			},
 		})
 		console.log(
-			`[company-brain][${traceId}] main model start activeToolCount=${initialActiveToolNames.length} hiddenToolCount=${Object.keys(tools).length - initialActiveToolNames.length} messages=${initialMessages.length} runtimeChars=${layout.runtimeContext.length} threadChars=${threadPromptChars} requestChars=${currentRequestPrompt.length}`,
+			`[kongming][${traceId}] main model start activeToolCount=${initialActiveToolNames.length} hiddenToolCount=${Object.keys(tools).length - initialActiveToolNames.length} messages=${initialMessages.length} runtimeChars=${layout.runtimeContext.length} threadChars=${threadPromptChars} requestChars=${currentRequestPrompt.length}`,
 		)
 
 		let currentRunLiveUpdateMessages: ModelMessage[] = []
@@ -541,7 +541,7 @@ export async function computeTurn(
 				})
 			}
 			console.log(
-				`[company-brain][${traceId}] applied live thread updates count=${updates.length} messages=${updates.map((update) => update.message_ts).join(",")}`,
+				`[kongming][${traceId}] applied live thread updates count=${updates.length} messages=${updates.map((update) => update.message_ts).join(",")}`,
 			)
 			return [{ role: "user", content: formatTurnUpdates(updates) }]
 		}
@@ -598,8 +598,8 @@ export async function computeTurn(
 				},
 				functionId:
 					attempt === "initial"
-						? "company-brain-turn"
-						: "company-brain-live-update",
+						? "kongming-turn"
+						: "kongming-live-update",
 				onPreparedStep: (snapshot) => {
 					stepSnapshots.set(snapshot.stepNumber, snapshot)
 				},
@@ -644,7 +644,7 @@ export async function computeTurn(
 				},
 				onError: ({ error }) => {
 					console.warn(
-						`[company-brain][${traceId}] streamText ${attempt} error:`,
+						`[kongming][${traceId}] streamText ${attempt} error:`,
 						error,
 					)
 				},
@@ -656,13 +656,13 @@ export async function computeTurn(
 							terminalCapture.count() > 1,
 						)
 						console.log(
-							`[company-brain][${traceId}] terminal proposal outcome=${terminalProposal.outcome} replyChars=${terminalProposal.reply.length}`,
+							`[kongming][${traceId}] terminal proposal outcome=${terminalProposal.outcome} replyChars=${terminalProposal.reply.length}`,
 						)
 						return
 					}
 					telemetry.onToolCallStart(event.toolCall.toolCallId)
 					console.log(
-						`[company-brain][${traceId}] tool start id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} input=${logToolInput(event.toolCall)}`,
+						`[kongming][${traceId}] tool start id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} input=${logToolInput(event.toolCall)}`,
 					)
 					await showProgressCard(
 						event.toolCall.toolCallId,
@@ -687,7 +687,7 @@ export async function computeTurn(
 						output,
 					})
 					console.log(
-						`[company-brain][${traceId}] tool finish id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} success=${event.success} output=${output === undefined ? "unavailable" : redactedPreview(output, event.success ? 4000 : 8000)}`,
+						`[kongming][${traceId}] tool finish id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} success=${event.success} output=${output === undefined ? "unavailable" : redactedPreview(output, event.success ? 4000 : 8000)}`,
 					)
 					if (event.success) {
 						toolTrace.push({
@@ -757,7 +757,7 @@ export async function computeTurn(
 			approval = batchApproval(approvals) ?? approval
 			if (options?.passiveInvestigation) {
 				console.warn(
-					`[company-brain][${traceId}] passive investigation suppressed approval request tool=${approval.toolName}`,
+					`[kongming][${traceId}] passive investigation suppressed approval request tool=${approval.toolName}`,
 				)
 				telemetry.finishTurn({
 					outputChoices: [{ role: "assistant", content: PASSIVE_NO_REPLY }],
@@ -782,7 +782,7 @@ export async function computeTurn(
 			touchTurnState(state)
 			telemetry.recordApproval(approvals.length)
 			console.log(
-				`[company-brain][${traceId}] approval requested count=${approvals.length} id=${approval.approvalId} tool=${approval.toolName} slug=${approval.slug ?? "-"} input=${redactedPreview(approval.input, 2000)}`,
+				`[kongming][${traceId}] approval requested count=${approvals.length} id=${approval.approvalId} tool=${approval.toolName} slug=${approval.slug ?? "-"} input=${redactedPreview(approval.input, 2000)}`,
 			)
 			telemetry.finishTurn({
 				outputChoices: lastProviderOutputChoices,
@@ -934,7 +934,7 @@ export async function computeTurn(
 		throwIfAborted(abortSignal)
 		if (output.silentConclusion) {
 			console.log(
-				`[company-brain][${traceId}] passive investigation concluded silently`,
+				`[kongming][${traceId}] passive investigation concluded silently`,
 			)
 			telemetry.finishTurn({
 				outputChoices: [{ role: "assistant", content: PASSIVE_NO_REPLY }],
@@ -978,12 +978,12 @@ export async function computeTurn(
 				}
 			} catch (error) {
 				console.warn(
-					`[company-brain][${traceId}] thread investigation checkpoint unavailable: ${error instanceof Error ? error.message : String(error)}`,
+					`[kongming][${traceId}] thread investigation checkpoint unavailable: ${error instanceof Error ? error.message : String(error)}`,
 				)
 			}
 		}
 		console.log(
-			`[company-brain][${traceId}] final output replyChars=${reply.length} memoryCount=${memoryDocsFromWriteback(memory).length} connect=${connect ?? "-"}`,
+			`[kongming][${traceId}] final output replyChars=${reply.length} memoryCount=${memoryDocsFromWriteback(memory).length} connect=${connect ?? "-"}`,
 		)
 		failurePhase = "completion"
 		telemetry.finishTurn({

@@ -10,7 +10,7 @@ A test is failing and the stack trace alone isn't enough. You want Company Brain
 
 > **#eng**
 >
-> **You:** @company-brain the `permissions.lease` unit test is failing on main, can you reproduce and tell me why?
+> **You:** @kongming the `permissions.lease` unit test is failing on main, can you reproduce and tell me why?
 >
 > **Company Brain:** Reproduced in a sandbox against `main`.
 >

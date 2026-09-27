@@ -52,7 +52,7 @@ export type CompanyBrainWelcomeEmailInput = {
 export function renderCompanyBrainWelcomeEmail(
 	input: CompanyBrainWelcomeEmailInput,
 ): string {
-	return renderEmailTemplate("lifecycle/company-brain/welcome", {
+	return renderEmailTemplate("lifecycle/kongming/welcome", {
 		FIRST_NAME: displayNameOrThere(input.displayName),
 		ORG_NAME: input.orgName.trim() || "your team",
 		BRAIN_URL: input.brainUrl,

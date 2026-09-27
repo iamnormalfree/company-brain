@@ -114,7 +114,7 @@ export async function announceResearchDone(
 			env,
 		}).catch((err) => {
 			console.warn(
-				"[company-brain-billing] research_announce failed:",
+				"[kongming-billing] research_announce failed:",
 				err instanceof Error ? err.message : err,
 			)
 		})
@@ -146,11 +146,11 @@ export async function announceResearchDone(
 		// guard on a real ts — otherwise one transient failure kills every retry.
 		const ts = await postSlackMessage(token, home.channelId, text)
 		if (!ts) {
-			console.warn("[company-brain] research announce: post failed, will retry")
+			console.warn("[kongming] research announce: post failed, will retry")
 			return
 		}
 		markAnnounced(agent)
 	} catch (err) {
-		console.warn("[company-brain] research announce failed:", err)
+		console.warn("[kongming] research announce failed:", err)
 	}
 }

@@ -783,7 +783,7 @@ export async function runPublicChannelBeachhead(
 	ensurePublicChannelRolloutTables(agent)
 	const bail = (reason: string) =>
 		console.log(
-			`[company-brain] beachhead skipped org=${agent.name} team=${payload.teamId} reason=${reason}`,
+			`[kongming] beachhead skipped org=${agent.name} team=${payload.teamId} reason=${reason}`,
 		)
 	const card = rolloutCard(agent)
 	if (!card) return bail("no_card")
@@ -854,7 +854,7 @@ export async function runPublicChannelBeachhead(
 		channelFilter: picks.map((c) => c.id),
 	})
 	console.log(
-		`[company-brain] beachhead join started org=${agent.name} team=${payload.teamId} channels=${picks.map((c) => c.name).join(",")}`,
+		`[kongming] beachhead join started org=${agent.name} team=${payload.teamId} channels=${picks.map((c) => c.name).join(",")}`,
 	)
 }
 
@@ -1487,7 +1487,7 @@ async function submitDocument(
 		addMemorySingle({
 			org,
 			userId: run.actor_user_id,
-			source: "company-brain-slack-history",
+			source: "kongming-slack-history",
 			requestParams: {
 				content: doc.content,
 				customId: doc.custom_id,
@@ -1822,7 +1822,7 @@ async function introduceStep(
 			})
 		}
 		console.log(
-			`[company-brain] public-channel rollout done run=${run.run_id} discovered=${counts.discovered} joined=${counts.joined} introduced=${counts.introduced} failed=${counts.failed}`,
+			`[kongming] public-channel rollout done run=${run.run_id} discovered=${counts.discovered} joined=${counts.joined} introduced=${counts.introduced} failed=${counts.failed}`,
 		)
 		return
 	}
@@ -1968,7 +1968,7 @@ export async function runPublicChannelRollout(
 		))
 	) {
 		console.log(
-			`[company-brain] rollout blocked: entitlement org=${agent.name} run=${run.run_id}`,
+			`[kongming] rollout blocked: entitlement org=${agent.name} run=${run.run_id}`,
 		)
 		agent.sql`
 			UPDATE brain_public_channel_rollout
@@ -2000,7 +2000,7 @@ export async function runPublicChannelRollout(
 		const message = rolloutErrorCode(error)
 		const failures = run.failure_count + 1
 		console.warn(
-			`[company-brain] public-channel rollout step failed run=${run.run_id} phase=${run.phase} failures=${failures}: ${message}`,
+			`[kongming] public-channel rollout step failed run=${run.run_id} phase=${run.phase} failures=${failures}: ${message}`,
 		)
 		if (failures >= MAX_RUN_FAILURES) {
 			agent.sql`

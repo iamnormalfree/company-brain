@@ -183,7 +183,7 @@ export function createSlackStreamSession(args: {
 		try {
 			onDeliveryCheckpoint?.(update)
 		} catch (error) {
-			console.warn("[company-brain] delivery checkpoint failed:", error)
+			console.warn("[kongming] delivery checkpoint failed:", error)
 		}
 	}
 
@@ -192,7 +192,7 @@ export function createSlackStreamSession(args: {
 		try {
 			return await prepareReply(reply)
 		} catch (error) {
-			console.warn("[company-brain] Slack reply preparation failed:", error)
+			console.warn("[kongming] Slack reply preparation failed:", error)
 			return reply
 		}
 	}
@@ -239,7 +239,7 @@ export function createSlackStreamSession(args: {
 		if (!streamTs) {
 			streamDead = true
 			console.warn(
-				`[company-brain] stream unavailable for org=${orgId}; answering without a card`,
+				`[kongming] stream unavailable for org=${orgId}; answering without a card`,
 			)
 		}
 		return streamTs
@@ -612,7 +612,7 @@ export function createSlackStreamSession(args: {
 					await stopSlackStream(botToken, channel, streamTs)
 				}
 			} catch (err) {
-				console.warn("[company-brain] stream finalize failed:", err)
+				console.warn("[kongming] stream finalize failed:", err)
 			}
 			return { streamed: streamedReply, messageTs: answerTs }
 		},
@@ -690,7 +690,7 @@ export function createSlackStreamSession(args: {
 			if (ts) checkpointDelivery({ replyMessageTs: ts })
 			if (!ts) {
 				console.warn(
-					`[company-brain] reply not delivered org=${orgId} channel=${channel} thread=${threadTs}`,
+					`[kongming] reply not delivered org=${orgId} channel=${channel} thread=${threadTs}`,
 				)
 			}
 			return ts

@@ -73,7 +73,7 @@ export function createBrainWebExtractTool(
 			const t = Date.now()
 			const tag = traceId ? `[${traceId}]` : ""
 			console.log(
-				`[company-brain]${tag} web_extract start count=${urls.length} urls="${logPreview(urls.join(" "))}"`,
+				`[kongming]${tag} web_extract start count=${urls.length} urls="${logPreview(urls.join(" "))}"`,
 			)
 			let rateLimited = false
 			const fetched = await Promise.all(
@@ -102,7 +102,7 @@ export function createBrainWebExtractTool(
 						return { title: page.title, url: page.url, markdown }
 					} catch (err) {
 						console.warn(
-							`[company-brain]${tag} web_extract failed url=${url}:`,
+							`[kongming]${tag} web_extract failed url=${url}:`,
 							err,
 						)
 						if (isRateLimited(err)) {
@@ -123,7 +123,7 @@ export function createBrainWebExtractTool(
 			)
 			const output = sections.join("\n\n---\n\n")
 			console.log(
-				`[company-brain]${tag} web_extract finish ms=${Date.now() - t} pages=${pages.length}/${urls.length} chars=${output.length}${rateLimited ? " rateLimited=yes" : ""}`,
+				`[kongming]${tag} web_extract finish ms=${Date.now() - t} pages=${pages.length}/${urls.length} chars=${output.length}${rateLimited ? " rateLimited=yes" : ""}`,
 			)
 			return output
 		},

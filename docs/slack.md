@@ -27,7 +27,7 @@
 - Requires `org` + `user` on install route, and `memberRole` of `admin` or `owner`; any other org member gets `403`
 - OAuth state in `AUTH_KV` (`slack:oauth:{state}`, TTL ~600s)
 - Bot token encrypted (PBKDF2 + AES-GCM; see workspace helpers) into `slack_workspace`
-- Bootstrap: `#company-brain` home, welcome, optional public-channel rollout card, member provisioning wave
+- Bootstrap: `#kongming` home, welcome, optional public-channel rollout card, member provisioning wave
 
 ### Disconnect
 
@@ -36,7 +36,7 @@ Runs for **every** `slack_workspace` row on the org. Two halves, shared with the
 operator shutdown below (`slack/workspace.ts`):
 
 **Announce** — `announceSlackWorkspaceFarewell`. One idempotent post per install in
-`#company-brain`, while the token still works and the Durable Object still knows the
+`#kongming`, while the token still works and the Durable Object still knows the
 home channel (fallback: the bot's joined channels, so a retry after reset still finds
 it). A retryable post (`ratelimited`, 5xx, network) returns `hold` and nothing is torn
 down, so the retry can still speak. A missing or dead channel is `skipped`, never a
@@ -78,7 +78,7 @@ response carries per-org results. Announcement and removal are separate, explici
 actions:
 
 1. **Send deprecation notice only** (`mode: "announce"`) posts once per installation
-   in `#company-brain`. The notice says the agent will leave by **Tuesday, September 8,
+   in `#kongming`. The notice says the agent will leave by **Tuesday, September 8,
    2026**, and saved data remains available at **console.supermemory.ai**. This run
    does not reset state, revoke tokens, uninstall the app, or schedule removal.
 2. **Remove agent now** (`mode: "remove"`) is a separate operator action to run by
@@ -181,9 +181,9 @@ Channel **ANSWER** replies in a **new thread** on the triggering message. Thread
 
 **Files:** `public-channel-rollout.ts`, `history-document.ts`, `channel-introduction.ts`, `connected-tool-crosscheck.ts`
 
-- Opt-in button (“Add me to public channels”) is posted to the **installer's DM** by `ensureAdminRolloutCard`; `#company-brain` only gets a read-only status card, because a channel message renders identically for every viewer.
+- Opt-in button (“Add me to public channels”) is posted to the **installer's DM** by `ensureAdminRolloutCard`; `#kongming` only gets a read-only status card, because a channel message renders identically for every viewer.
 - Freezes a **7-day** window; pages join/history with persisted cursors; respects Slack `Retry-After` via alarms.
-- Skips `#general`, `#company-brain`, private, archived, Slack Connect.
+- Skips `#general`, `#kongming`, private, archived, Slack Connect.
 - Documents → **`sm_org_shared`** (raw searchable + dynamic memory extraction).
 - Themes corroborated only with **org-shared read-only** tools; evidence not written as durable truth.
 - Exactly-once introductions via ledger + Slack `client_msg_id`.

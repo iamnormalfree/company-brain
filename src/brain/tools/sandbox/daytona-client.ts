@@ -56,7 +56,7 @@ async function daytonaRequest<T>(
 		signal: init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout,
 		headers: {
 			Authorization: `Bearer ${config.apiKey}`,
-			"X-Daytona-Source": "supermemory-company-brain",
+			"X-Daytona-Source": "supermemory-kongming",
 			...(init?.body ? { "Content-Type": "application/json" } : {}),
 			...init?.headers,
 		},
@@ -201,7 +201,7 @@ export function createDaytonaSandboxClient(env: Env): SandboxClient {
 
 			const createBody: CreateSandbox = {
 				labels: {
-					app: "company-brain",
+					app: "kongming",
 					kind: "slack-workspace",
 					"code-toolbox-language": "typescript",
 				},

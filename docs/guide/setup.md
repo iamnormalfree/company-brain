@@ -31,14 +31,14 @@ Click **Sign in with Slack**. The first person to sign in creates the organizati
 Click **Install to Slack** (on `/setup`, or from the brain's home). Only owners and admins can install. After you approve Slack's consent screen:
 
 1. **Hand off to Slack.** The app UI welcomes you back and points you to Slack.
-2. **Home channel.** The agent creates `#company-brain`, invites you, and posts an intro there.
+2. **Home channel.** The agent creates `#kongming`, invites you, and posts an intro there.
 3. **Research.** It figures out your company's domain from your Slack workspace and starts learning about the company. If the deployment has `CONTEXT_DEV_API_KEY` set, that includes reading your company's website.
 4. **Channels.** An admin card offers to **add it to your public channels**. It never joins silently: you tap once, then it works through your public channels and introduces itself. Private channels only get it when someone invites it.
 5. **Your team.** Rolling it out to teammates starts automatically: people are picked up from the Slack workspace and get a welcome DM. There's no per-seat anything, so nobody has to be invited by email.
 6. **Your DM.** You get a welcome DM with buttons to connect your first tools.
 
 > [!NOTE]
-> **Try it:** ask `What does {your company} do?` in `#company-brain` or a DM.
+> **Try it:** ask `What does {your company} do?` in `#kongming` or a DM.
 
 ## 5. The app UI
 

@@ -63,7 +63,7 @@ export async function searchBrain(
 	const filters = buildBrainFocusFilter(focusTags)
 	if (traceId) {
 		console.log(
-			`[company-brain][${traceId}] searchBrain start query="${logPreview(q, 240)}" queryChars=${q.length} scope=${scope?.kind ?? "none"} containers=${containerTags.join(",")} focus=${focusTags?.length ? focusTags.join("|") : "none"}`,
+			`[kongming][${traceId}] searchBrain start query="${logPreview(q, 240)}" queryChars=${q.length} scope=${scope?.kind ?? "none"} containers=${containerTags.join(",")} focus=${focusTags?.length ? focusTags.join("|") : "none"}`,
 		)
 	}
 	const searchContainer = async (containerTag: string) => {
@@ -86,7 +86,7 @@ export async function searchBrain(
 		})
 		if (traceId) {
 			console.log(
-				`[company-brain][${traceId}] searchBrain container=${containerTag} results=${result.results.length} total=${result.total} engineMs=${result.timing} wallMs=${Date.now() - t} scores=${formatBrainScoreSummary(result.results)}`,
+				`[kongming][${traceId}] searchBrain container=${containerTag} results=${result.results.length} total=${result.total} engineMs=${result.timing} wallMs=${Date.now() - t} scores=${formatBrainScoreSummary(result.results)}`,
 			)
 		}
 		return result
@@ -116,7 +116,7 @@ export async function searchBrain(
 		.slice(0, 40)
 	if (traceId) {
 		console.log(
-			`[company-brain][${traceId}] searchBrain finish containers=${containerTags.length} raw=${searches.reduce((total, search) => total + search.results.length, 0)} deduped=${byId.size} duplicates=${duplicates} returned=${results.length} totalMs=${Date.now() - startedAt} finalScores=${formatBrainScoreSummary(results)}`,
+			`[kongming][${traceId}] searchBrain finish containers=${containerTags.length} raw=${searches.reduce((total, search) => total + search.results.length, 0)} deduped=${byId.size} duplicates=${duplicates} returned=${results.length} totalMs=${Date.now() - startedAt} finalScores=${formatBrainScoreSummary(results)}`,
 		)
 	}
 	return {

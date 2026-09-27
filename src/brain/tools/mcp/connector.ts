@@ -591,7 +591,7 @@ export class CompanyBrainMcpConnector extends McpConnector<Env> {
 						throwEncoded(failure)
 					} finally {
 						console.log(
-							`[company-brain][${this.target.traceId}] connected-app call app=${this.target.ref.serverSlug} method=${args.method.sourceToolName} ms=${Date.now() - startedAt}`,
+							`[kongming][${this.target.traceId}] connected-app call app=${this.target.ref.serverSlug} method=${args.method.sourceToolName} ms=${Date.now() - startedAt}`,
 						)
 					}
 				},

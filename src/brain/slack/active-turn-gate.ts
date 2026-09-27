@@ -123,7 +123,7 @@ async function generateGateDecision(
 		maxRetries: 1,
 		experimental_telemetry: {
 			isEnabled: true,
-			functionId: "company-brain-active-turn-gate",
+			functionId: "kongming-active-turn-gate",
 		},
 	})
 	if (billing?.orgId) {
@@ -190,7 +190,7 @@ export async function triageActiveTurnMessage(
 		return { outcome }
 	} catch (error) {
 		console.warn(
-			"[company-brain] active-turn gate failed, defaulting to append:",
+			"[kongming] active-turn gate failed, defaulting to append:",
 			error,
 		)
 		if (input.obs) {

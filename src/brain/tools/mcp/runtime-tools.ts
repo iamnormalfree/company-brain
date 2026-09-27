@@ -151,7 +151,7 @@ export async function createMcpRuntimeTools(
 			const listed = await handle.listTools()
 			const finishedAt = Date.now()
 			console.log(
-				`[company-brain][${traceId}] mcp connected ${conn.serverSlug} tools=${listed.length} connectMs=${connectedAt - connectStartedAt} listMs=${finishedAt - connectedAt} ms=${finishedAt - serverStartedAt}`,
+				`[kongming][${traceId}] mcp connected ${conn.serverSlug} tools=${listed.length} connectMs=${connectedAt - connectStartedAt} listMs=${finishedAt - connectedAt} ms=${finishedAt - serverStartedAt}`,
 			)
 			return {
 				ok: true as const,
@@ -163,7 +163,7 @@ export async function createMcpRuntimeTools(
 		} catch (err) {
 			await handle?.close().catch(() => {})
 			console.warn(
-				`[company-brain][${traceId}] mcp connect ${conn.serverSlug} failed: ${loggedError(err)}`,
+				`[kongming][${traceId}] mcp connect ${conn.serverSlug} failed: ${loggedError(err)}`,
 			)
 			// expired/invalid OAuth -> flag for reconnect instead of silently dropping
 			if (err instanceof McpReauthRequiredError) {
@@ -209,7 +209,7 @@ export async function createMcpRuntimeTools(
 		}
 	}
 	console.log(
-		`[company-brain][${traceId}] mcp setup connections=${connections.length} connected=${servers.length} tools=${index.size} ms=${Date.now() - setupStartedAt}`,
+		`[kongming][${traceId}] mcp setup connections=${connections.length} connected=${servers.length} tools=${index.size} ms=${Date.now() - setupStartedAt}`,
 	)
 
 	const ownServers = new Set(servers)
@@ -218,7 +218,7 @@ export async function createMcpRuntimeTools(
 		try {
 			if (ownServers.has(lease.serverSlug)) {
 				console.log(
-					`[company-brain][${traceId}] mcp lease ${lease.serverSlug} skipped (actor already connected)`,
+					`[kongming][${traceId}] mcp lease ${lease.serverSlug} skipped (actor already connected)`,
 				)
 				continue
 			}
@@ -257,7 +257,7 @@ export async function createMcpRuntimeTools(
 				})
 			}
 			console.log(
-				`[company-brain][${traceId}] mcp leased ${lease.serverSlug} tools=${listed.length} lease=${lease.leaseId}`,
+				`[kongming][${traceId}] mcp leased ${lease.serverSlug} tools=${listed.length} lease=${lease.leaseId}`,
 			)
 		} catch (err) {
 			serverStates.push({
@@ -270,7 +270,7 @@ export async function createMcpRuntimeTools(
 						: "temporarily_unavailable",
 			})
 			console.warn(
-				`[company-brain][${traceId}] mcp leased connect ${lease.serverSlug} failed: ${loggedError(err)}`,
+				`[kongming][${traceId}] mcp leased connect ${lease.serverSlug} failed: ${loggedError(err)}`,
 			)
 		}
 	}
@@ -307,12 +307,12 @@ export async function createMcpRuntimeTools(
 				retryOnTimeout: toolClass === "read",
 			})
 			console.log(
-				`[company-brain][${traceId}] mcp_execute_tool(leased) ${id} ms=${Date.now() - t0} lease=${lease.leaseId}`,
+				`[kongming][${traceId}] mcp_execute_tool(leased) ${id} ms=${Date.now() - t0} lease=${lease.leaseId}`,
 			)
 			return out
 		} catch (err) {
 			console.warn(
-				`[company-brain][${traceId}] mcp_execute_tool(leased) ${id} failed: ${loggedError(err)}`,
+				`[kongming][${traceId}] mcp_execute_tool(leased) ${id} failed: ${loggedError(err)}`,
 			)
 			return {
 				isError: true,
@@ -339,7 +339,7 @@ export async function createMcpRuntimeTools(
 				(t) => ({ tool: t.id, description: t.description.slice(0, 200) }),
 			)
 			console.log(
-				`[company-brain][${traceId}] mcp_search_tools${actor.redactToolLogs ? "" : ` q="${query}"`} hits=${results.length}`,
+				`[kongming][${traceId}] mcp_search_tools${actor.redactToolLogs ? "" : ` q="${query}"`} hits=${results.length}`,
 			)
 			return { tools: results }
 		},
@@ -423,12 +423,12 @@ export async function createMcpRuntimeTools(
 					retryOnTimeout: isReadOnlyTool(t),
 				})
 				console.log(
-					`[company-brain][${traceId}] mcp_execute_tool ${id} ms=${Date.now() - t0}`,
+					`[kongming][${traceId}] mcp_execute_tool ${id} ms=${Date.now() - t0}`,
 				)
 				return out
 			} catch (err) {
 				console.warn(
-					`[company-brain][${traceId}] mcp_execute_tool ${id} failed: ${loggedError(err)}`,
+					`[kongming][${traceId}] mcp_execute_tool ${id} failed: ${loggedError(err)}`,
 				)
 				return {
 					isError: true,

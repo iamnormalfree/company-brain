@@ -703,7 +703,7 @@ export function scheduleTriageOutcome(
 				})
 			} catch {
 				console.warn(
-					`[company-brain] triage_outcome_telemetry_failed trace=${obs.traceId} context=${obs.chimeContext ?? "thread"}`,
+					`[kongming] triage_outcome_telemetry_failed trace=${obs.traceId} context=${obs.chimeContext ?? "thread"}`,
 				)
 			}
 		})(),
@@ -763,7 +763,7 @@ export async function triageChimeMessage(
 			maxRetries: 1,
 			experimental_telemetry: {
 				isEnabled: true,
-				functionId: `company-brain-triage-${args.context}`,
+				functionId: `kongming-triage-${args.context}`,
 			},
 		})
 		const text = gen.text
@@ -822,7 +822,7 @@ export async function triageChimeMessage(
 			result.source === "affirmative_override"
 		) {
 			console.log(
-				`[company-brain] triage override pass -> answer context=${args.context} source=${result.source}`,
+				`[kongming] triage override pass -> answer context=${args.context} source=${result.source}`,
 			)
 		}
 	} catch (caught) {
@@ -830,7 +830,7 @@ export async function triageChimeMessage(
 		providerError = summarizeProviderError(caught)
 		result = fallbackResult(args.context, "error_fallback")
 		console.warn(
-			`[company-brain] triage_generation_failed trace=${args.obs?.traceId ?? "-"} context=${args.context} name=${providerError.name ?? "unknown"} status=${providerError.statusCode ?? "unknown"}`,
+			`[kongming] triage_generation_failed trace=${args.obs?.traceId ?? "-"} context=${args.context} name=${providerError.name ?? "unknown"} status=${providerError.statusCode ?? "unknown"}`,
 		)
 	}
 
@@ -865,7 +865,7 @@ export async function triageChimeMessage(
 					})
 				} catch {
 					console.warn(
-						`[company-brain] triage_telemetry_failed trace=${obs.traceId} context=${args.context}`,
+						`[kongming] triage_telemetry_failed trace=${obs.traceId} context=${args.context}`,
 					)
 				}
 			})(),

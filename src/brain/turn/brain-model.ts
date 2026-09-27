@@ -152,7 +152,7 @@ export function wrapBrainGateway(
 ): LanguageModel {
 	const [primary] = models
 	if (!primary) {
-		throw new Error("[company-brain] no model candidates provided")
+		throw new Error("[kongming] no model candidates provided")
 	}
 	const config = brainGatewayConfig(env)
 	if (!config) return primary

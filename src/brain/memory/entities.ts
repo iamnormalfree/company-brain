@@ -156,7 +156,7 @@ async function writeEntity(
 	const program = addMemorySingle({
 		org: { id: org.id, name: org.name, metadata: org.metadata },
 		userId,
-		source: "company-brain",
+		source: "kongming",
 		executionCtx: undefined,
 		requestParams: {
 			content,
@@ -164,7 +164,7 @@ async function writeEntity(
 			containerTag: SHARED_TEAM_BRAIN_CONTAINER_TAG,
 			metadata: {
 				type: ENTITY_TYPE,
-				sm_source: "company-brain",
+				sm_source: "kongming",
 				brain_reset_epoch: resetEpoch,
 				title: entity.canonical,
 				canonical: entity.canonical,

@@ -311,7 +311,7 @@ async function runScheduledTaskInner(
 	const ws = await getWorkspaceByTeamId(env, payload.teamId)
 	if (!ws) {
 		console.warn(
-			`[company-brain] scheduled task ${schedule.id} cancelled: workspace gone team=${payload.teamId} expectedOrg=${agent.name}`,
+			`[kongming] scheduled task ${schedule.id} cancelled: workspace gone team=${payload.teamId} expectedOrg=${agent.name}`,
 		)
 		await agent.cancelSchedule(schedule.id)
 		return
@@ -320,7 +320,7 @@ async function runScheduledTaskInner(
 	// level so it stays distinguishable from a routine uninstall.
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain] scheduled task ${schedule.id} cancelled: workspace rebound team=${payload.teamId} scheduledOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming] scheduled task ${schedule.id} cancelled: workspace rebound team=${payload.teamId} scheduledOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		await agent.cancelSchedule(schedule.id)
 		return
@@ -355,13 +355,13 @@ async function runScheduledTaskInner(
 		: payload.channel
 	if (!target) {
 		console.warn(
-			`[company-brain] scheduled task ${schedule.id} dropped: no delivery target deliverTo=${payload.deliverTo ?? "origin"} slackUser=${payload.creatorSlackUserId ?? "-"}`,
+			`[kongming] scheduled task ${schedule.id} dropped: no delivery target deliverTo=${payload.deliverTo ?? "origin"} slackUser=${payload.creatorSlackUserId ?? "-"}`,
 		)
 		return
 	}
 	const directDelivery = isDirectSlackChannel(target)
 	console.log(
-		`[company-brain] scheduled task ${schedule.id} fire org=${org.id} deliverTo=${payload.deliverTo ?? "origin"} target=${target} label="${payload.label}"`,
+		`[kongming] scheduled task ${schedule.id} fire org=${org.id} deliverTo=${payload.deliverTo ?? "origin"} target=${target} label="${payload.label}"`,
 	)
 
 	const cadence = payload.cadence ?? "daily"
@@ -400,7 +400,7 @@ async function runScheduledTaskInner(
 		))
 	) {
 		console.log(
-			`[company-brain] scheduled task ${schedule.id} blocked: entitlement org=${org.id}`,
+			`[kongming] scheduled task ${schedule.id} blocked: entitlement org=${org.id}`,
 		)
 		return
 	}
@@ -428,7 +428,7 @@ async function runScheduledTaskInner(
 
 	if (out.status !== "completed") {
 		console.warn(
-			`[company-brain] scheduled task ${schedule.id} did not complete status=${out.status}`,
+			`[kongming] scheduled task ${schedule.id} did not complete status=${out.status}`,
 		)
 		return
 	}
@@ -466,11 +466,11 @@ async function runScheduledTaskInner(
 	if (ts) {
 		recordMessageTrace(agent, target, ts, traceId, deliveryThreadTs)
 		console.log(
-			`[company-brain] scheduled task ${schedule.id} posted ts=${ts} target=${target} trace=${traceId} replyChars=${reply.length}`,
+			`[kongming] scheduled task ${schedule.id} posted ts=${ts} target=${target} trace=${traceId} replyChars=${reply.length}`,
 		)
 	} else {
 		console.warn(
-			`[company-brain] scheduled task ${schedule.id} post produced no message target=${target} replyChars=${reply.length}`,
+			`[kongming] scheduled task ${schedule.id} post produced no message target=${target} replyChars=${reply.length}`,
 		)
 	}
 }

@@ -213,7 +213,7 @@ async function rearmOwnedPostTurnReflect(
 		)
 	} catch (err) {
 		queuePostTurnReflectRepair(agent, key)
-		console.error("[company-brain] post-turn-reflect schedule failed:", err)
+		console.error("[kongming] post-turn-reflect schedule failed:", err)
 		return
 	}
 	try {
@@ -228,7 +228,7 @@ async function rearmOwnedPostTurnReflect(
 		await agent.cancelSchedule(scheduled.id).catch(() => {})
 		queuePostTurnReflectRepair(agent, key)
 		console.error(
-			"[company-brain] post-turn-reflect ownership handoff failed:",
+			"[kongming] post-turn-reflect ownership handoff failed:",
 			err,
 		)
 		return
@@ -276,7 +276,7 @@ async function retryOwnedPostTurnReflect(
 			},
 		})
 		console.error(
-			`[company-brain] post-turn-reflect retries exhausted channel=${payload.channel} thread=${payload.threadTs}`,
+			`[kongming] post-turn-reflect retries exhausted channel=${payload.channel} thread=${payload.threadTs}`,
 			error instanceof Error ? error.name : "unknown",
 		)
 		return
@@ -343,7 +343,7 @@ async function reconcilePostTurnReflectRow(
 		return true
 	} catch (err) {
 		if (scheduled) await agent.cancelSchedule(scheduled.id).catch(() => {})
-		console.error("[company-brain] post-turn-reflect repair failed:", err)
+		console.error("[kongming] post-turn-reflect repair failed:", err)
 		return false
 	}
 }
@@ -360,7 +360,7 @@ function queuePostTurnReflectRepair(
 			}
 		})().catch((err) => {
 			console.error(
-				"[company-brain] post-turn-reflect background repair failed:",
+				"[kongming] post-turn-reflect background repair failed:",
 				err,
 			)
 		}),
@@ -439,7 +439,7 @@ async function attemptPostTurnReflectArm(
 			await agent.cancelSchedule(existing.schedule_id).catch(() => {})
 		}
 		console.log(
-			`[company-brain] post-turn-reflect armed delay=${POST_TURN_REFLECT_DELAY_SECONDS}s channel=${payload.channel} thread=${payload.threadTs} schedule=${scheduled.id} originTrace=${payload.originTraceId ?? "-"}`,
+			`[kongming] post-turn-reflect armed delay=${POST_TURN_REFLECT_DELAY_SECONDS}s channel=${payload.channel} thread=${payload.threadTs} schedule=${scheduled.id} originTrace=${payload.originTraceId ?? "-"}`,
 		)
 		return true
 	} catch (err) {
@@ -452,7 +452,7 @@ async function attemptPostTurnReflectArm(
 			} catch {}
 			await agent.cancelSchedule(scheduled.id).catch(() => {})
 		}
-		console.error("[company-brain] post-turn-reflect initial arm failed:", err)
+		console.error("[kongming] post-turn-reflect initial arm failed:", err)
 		return false
 	}
 }
@@ -472,7 +472,7 @@ function queuePostTurnReflectArmRetry(
 				}
 			}
 		})().catch((err) => {
-			console.error("[company-brain] post-turn-reflect arm repair failed:", err)
+			console.error("[kongming] post-turn-reflect arm repair failed:", err)
 		}),
 	)
 }
@@ -527,7 +527,7 @@ export async function runPostTurnReflect(
 	`[0]
 	if (!row || row.schedule_id !== schedule.id) {
 		console.log(
-			`[company-brain] post-turn-reflect skip stale channel=${payload.channel} thread=${payload.threadTs} schedule=${schedule.id}`,
+			`[kongming] post-turn-reflect skip stale channel=${payload.channel} thread=${payload.threadTs} schedule=${schedule.id}`,
 		)
 		return
 	}
@@ -573,7 +573,7 @@ export async function runPostTurnReflect(
 			WHERE thread_key = ${key} AND schedule_id = ${schedule.id}
 		`
 	} catch (err) {
-		console.error("[company-brain] post-turn-reflect observe failed:", err)
+		console.error("[kongming] post-turn-reflect observe failed:", err)
 		await retryOwnedPostTurnReflect(
 			agent,
 			payload,
@@ -582,7 +582,7 @@ export async function runPostTurnReflect(
 			err,
 		).catch((rearmError) => {
 			console.error(
-				"[company-brain] post-turn-reflect retry arm failed:",
+				"[kongming] post-turn-reflect retry arm failed:",
 				rearmError,
 			)
 		})

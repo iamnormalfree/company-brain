@@ -35,7 +35,7 @@ export async function writeCompanyContext(
 	const program = addMemorySingle({
 		org: { id: org.id, name: org.name, metadata: org.metadata },
 		userId,
-		source: "company-brain",
+		source: "kongming",
 		executionCtx,
 		requestParams: {
 			content,
@@ -43,7 +43,7 @@ export async function writeCompanyContext(
 			containerTag: SHARED_TEAM_BRAIN_CONTAINER_TAG,
 			metadata: {
 				type: COMPANY_CONTEXT_TYPE,
-				sm_source: "company-brain",
+				sm_source: "kongming",
 				title: `About ${org.name}`,
 			},
 		},
@@ -78,14 +78,14 @@ export async function getCompanyContext(
 		const content = row?.content?.trim() || null
 		if (traceId) {
 			console.log(
-				`[company-brain][${traceId}] company_context lookup org=${orgId} found=${content ? "yes" : "no"} chars=${content?.length ?? 0} ms=${Date.now() - t}`,
+				`[kongming][${traceId}] company_context lookup org=${orgId} found=${content ? "yes" : "no"} chars=${content?.length ?? 0} ms=${Date.now() - t}`,
 			)
 		}
 		return content
 	} catch (error) {
 		if (traceId) {
 			console.warn(
-				`[company-brain][${traceId}] company_context lookup failed org=${orgId} ms=${Date.now() - t}:`,
+				`[kongming][${traceId}] company_context lookup failed org=${orgId} ms=${Date.now() - t}:`,
 				error,
 			)
 		}

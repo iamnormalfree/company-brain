@@ -13,7 +13,7 @@ Some questions aren't a quick lookup. They need pulling information from a lot o
 
 > **#product**
 >
-> **You:** @company-brain prepare a brief on how we've handled enterprise SSO requests over the last two quarters: who asked, what we promised, what's still open, and what engineering thinks the real effort is
+> **You:** @kongming prepare a brief on how we've handled enterprise SSO requests over the last two quarters: who asked, what we promised, what's still open, and what engineering thinks the real effort is
 >
 > **Company Brain:** **Enterprise SSO: two-quarter brief**
 >

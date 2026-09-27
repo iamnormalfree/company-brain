@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "company-brain",
+	"name": "kongming",
 	"main": "src/worker.ts",
 	"compatibility_date": "2025-06-22",
 	"compatibility_flags": [
@@ -45,7 +45,7 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "company-brain",
+			"database_name": "kongming",
 			"database_id": "00000000-0000-0000-0000-000000000000",
 			"migrations_dir": "drizzle"
 		}

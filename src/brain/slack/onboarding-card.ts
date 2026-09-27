@@ -92,7 +92,7 @@ export async function greetSlackInstaller(
 		const org = await orgWithBrain(env, args.orgId)
 		if (!org) {
 			console.warn(
-				`[slack] greet skipped: org not company-brain org=${args.orgId}`,
+				`[slack] greet skipped: org not kongming org=${args.orgId}`,
 			)
 			return
 		}

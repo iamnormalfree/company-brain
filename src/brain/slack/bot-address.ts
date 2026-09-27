@@ -8,8 +8,8 @@ import {
 
 const PRODUCT_ALIASES = [
 	"supermemory",
-	"company brain",
-	"company-brain",
+	"kongming",
+	"kongming",
 ] as const
 const ALIAS_CACHE_TTL_SECONDS = 60 * 60 * 24
 const DIRECT_GREETING_PREFIX =

@@ -216,7 +216,7 @@ export async function deleteConnection(
 			await Promise.all(deleted.map((d) => agent.onConnectionRevoked(d.id)))
 		} catch (err) {
 			console.warn(
-				`[company-brain] revoke leases for deleted connection failed: ${err instanceof Error ? err.message : String(err)}`,
+				`[kongming] revoke leases for deleted connection failed: ${err instanceof Error ? err.message : String(err)}`,
 			)
 		}
 	}

@@ -405,14 +405,14 @@ export function createSchedulerTools(
 					}),
 				})
 			} catch (err) {
-				console.warn(`[company-brain][${traceId}] schedule_task failed:`, err)
+				console.warn(`[kongming][${traceId}] schedule_task failed:`, err)
 				return {
 					error:
 						"Could not create the schedule. Check the timing and try again.",
 				}
 			}
 			console.log(
-				`[company-brain][${traceId}] schedule_task id=${created.id} when=${when.kind} deliverTo=${target.deliverTo} related=${relatedPeopleIds.length} label="${logPreview(label)}"`,
+				`[kongming][${traceId}] schedule_task id=${created.id} when=${when.kind} deliverTo=${target.deliverTo} related=${relatedPeopleIds.length} label="${logPreview(label)}"`,
 			)
 			return {
 				id: created.id,
@@ -434,7 +434,7 @@ export function createSchedulerTools(
 		execute: async () => {
 			const tasks = listBrainTasks(agent, ctx.creatorSlackUserId)
 			console.log(
-				`[company-brain][${traceId}] list_scheduled_tasks count=${tasks.length}`,
+				`[kongming][${traceId}] list_scheduled_tasks count=${tasks.length}`,
 			)
 			return tasks.map((task) => {
 				const relationship = scheduleRelationship(
@@ -482,7 +482,7 @@ export function createSchedulerTools(
 		execute: async ({ id }) => {
 			const cancelled = await cancelBrainTask(agent, id, ctx.creatorSlackUserId)
 			console.log(
-				`[company-brain][${traceId}] cancel_scheduled_task id=${id} cancelled=${cancelled}`,
+				`[kongming][${traceId}] cancel_scheduled_task id=${id} cancelled=${cancelled}`,
 			)
 			if (!cancelled) {
 				return {
@@ -600,7 +600,7 @@ export function createSchedulerTools(
 			}
 			const schedule = result.schedule
 			console.log(
-				`[company-brain][${traceId}] replace_scheduled_task old=${id} new=${schedule.id} owner=${schedule.payload.creatorSlackUserId ?? "-"}`,
+				`[kongming][${traceId}] replace_scheduled_task old=${id} new=${schedule.id} owner=${schedule.payload.creatorSlackUserId ?? "-"}`,
 			)
 			return {
 				oldId: id,

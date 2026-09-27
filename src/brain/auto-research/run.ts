@@ -223,7 +223,7 @@ export async function cancelAutoResearchSchedules(
 		retired.map((s) => agent.cancelSchedule(s.id).catch(() => {})),
 	)
 	console.log(
-		`[company-brain] auto-research retired cron cancelled org=${agent.name} count=${retired.length}`,
+		`[kongming] auto-research retired cron cancelled org=${agent.name} count=${retired.length}`,
 	)
 }
 
@@ -254,7 +254,7 @@ export async function runAutoResearch(
 	const lease = acquireAutoResearchLease(agent, payload.force)
 	if (!lease) {
 		console.log(
-			`[company-brain] auto-research skipped: run in progress org=${orgId}`,
+			`[kongming] auto-research skipped: run in progress org=${orgId}`,
 		)
 		return
 	}
@@ -265,7 +265,7 @@ export async function runAutoResearch(
 		setAutoResearchProgress(agent, lease, "planning")
 		const org = await loadOrg(agent)
 		if (!org) {
-			console.warn(`[company-brain] auto-research aborted: no org org=${orgId}`)
+			console.warn(`[kongming] auto-research aborted: no org org=${orgId}`)
 			return
 		}
 		const slack = await loadOrgSlackContext(agent)
@@ -345,14 +345,14 @@ export async function runAutoResearch(
 			// A stolen or expired lease means someone else owns the run now.
 			if (!renewAutoResearchLease(agent, lease)) {
 				console.log(
-					`[company-brain] auto-research stopped: lease lost org=${orgId}`,
+					`[kongming] auto-research stopped: lease lost org=${orgId}`,
 				)
 				return
 			}
 			const batch = jobs.slice(i, i + DRAFT_CONCURRENCY)
 			active = batch.length
 			console.log(
-				`[company-brain] auto-research batch org=${orgId} jobs=${i + 1}-${i + batch.length}/${jobs.length}`,
+				`[kongming] auto-research batch org=${orgId} jobs=${i + 1}-${i + batch.length}/${jobs.length}`,
 			)
 			setAutoResearchProgress(
 				agent,
@@ -368,7 +368,7 @@ export async function runAutoResearch(
 				try {
 					if (!renewAutoResearchLease(agent, lease))
 						console.log(
-							`[company-brain] auto-research lease lost mid-batch org=${orgId}`,
+							`[kongming] auto-research lease lost mid-batch org=${orgId}`,
 						)
 				} catch {}
 			}, LEASE_HEARTBEAT_MS)
@@ -404,12 +404,12 @@ export async function runAutoResearch(
 							} else {
 								skipped.push("ownership_lost")
 								console.log(
-									`[company-brain] auto-research draft discarded org=${orgId} kind=${job.kind} reason=ownership_lost`,
+									`[kongming] auto-research draft discarded org=${orgId} kind=${job.kind} reason=ownership_lost`,
 								)
 							}
 						} catch (err) {
 							console.warn(
-								`[company-brain] auto-research draft error org=${orgId} kind=${job.kind}:`,
+								`[kongming] auto-research draft error org=${orgId} kind=${job.kind}:`,
 								err instanceof Error ? err.message : err,
 							)
 						} finally {
@@ -431,13 +431,13 @@ export async function runAutoResearch(
 			}
 			if (!isBrainMemoryResetEpochCurrent(agent, resetEpoch)) {
 				console.log(
-					`[company-brain] auto-research aborted: reset during run org=${orgId}`,
+					`[kongming] auto-research aborted: reset during run org=${orgId}`,
 				)
 				return
 			}
 		}
 		console.log(
-			`[company-brain] auto-research run org=${orgId} jobs=${jobs.length} drafted=${drafted}`,
+			`[kongming] auto-research run org=${orgId} jobs=${jobs.length} drafted=${drafted}`,
 		)
 		setAutoResearchOutcome(agent, runOutcome(drafted, jobs.length, skipped))
 	} catch (err) {
@@ -455,7 +455,7 @@ export async function runAutoResearch(
 			skipBilling: true,
 		}).catch((err) =>
 			console.warn(
-				"[company-brain-billing] auto_research failed:",
+				"[kongming-billing] auto_research failed:",
 				err instanceof Error ? err.message : err,
 			),
 		)

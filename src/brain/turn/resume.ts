@@ -214,7 +214,7 @@ export async function resumeTurnAfterApproval(
 		})
 	}
 	console.log(
-		`[company-brain][${traceId}] resume approval=${approval.approvalId} approved=${approved} org=${org.id} model=${profile.name} effort=${profile.effort} tool=${approval.toolName} slug=${approval.slug ?? "-"}`,
+		`[kongming][${traceId}] resume approval=${approval.approvalId} approved=${approved} org=${org.id} model=${profile.name} effort=${profile.effort} tool=${approval.toolName} slug=${approval.slug ?? "-"}`,
 	)
 
 	const assemblyArgs = {
@@ -312,7 +312,7 @@ export async function resumeTurnAfterApproval(
 				})
 			}
 			console.log(
-				`[company-brain][${traceId}] applied approval-resume live updates count=${updates.length} messages=${updates.map((update) => update.message_ts).join(",")}`,
+				`[kongming][${traceId}] applied approval-resume live updates count=${updates.length} messages=${updates.map((update) => update.message_ts).join(",")}`,
 			)
 			return [{ role: "user", content: formatTurnUpdates(updates) }]
 		}
@@ -451,8 +451,8 @@ export async function resumeTurnAfterApproval(
 				},
 				functionId:
 					attempt === "approval_resume"
-						? "company-brain-approval-resume"
-						: "company-brain-approval-live-update",
+						? "kongming-approval-resume"
+						: "kongming-approval-live-update",
 				onPreparedStep: (snapshot) => {
 					stepSnapshots.set(snapshot.stepNumber, snapshot)
 				},
@@ -496,7 +496,7 @@ export async function resumeTurnAfterApproval(
 				},
 				onError: ({ error }) => {
 					console.warn(
-						`[company-brain][${traceId}] streamText ${attempt} error:`,
+						`[kongming][${traceId}] streamText ${attempt} error:`,
 						error,
 					)
 				},
@@ -508,13 +508,13 @@ export async function resumeTurnAfterApproval(
 							terminalCapture.count() > 1,
 						)
 						console.log(
-							`[company-brain][${traceId}] terminal proposal after approval outcome=${terminalProposal.outcome} replyChars=${terminalProposal.reply.length}`,
+							`[kongming][${traceId}] terminal proposal after approval outcome=${terminalProposal.outcome} replyChars=${terminalProposal.reply.length}`,
 						)
 						return
 					}
 					telemetry.onToolCallStart(event.toolCall.toolCallId)
 					console.log(
-						`[company-brain][${traceId}] tool start id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} input=${logToolInput(event.toolCall)}`,
+						`[kongming][${traceId}] tool start id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} input=${logToolInput(event.toolCall)}`,
 					)
 					await showProgressCard(
 						event.toolCall.toolCallId,
@@ -539,7 +539,7 @@ export async function resumeTurnAfterApproval(
 						output,
 					})
 					console.log(
-						`[company-brain][${traceId}] tool finish id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} success=${event.success} output=${output === undefined ? "unavailable" : redactedPreview(output, event.success ? 4000 : 8000)}`,
+						`[kongming][${traceId}] tool finish id=${event.toolCall.toolCallId} name=${event.toolCall.toolName} success=${event.success} output=${output === undefined ? "unavailable" : redactedPreview(output, event.success ? 4000 : 8000)}`,
 					)
 					if (event.success) {
 						toolTrace.push({
@@ -662,7 +662,7 @@ export async function resumeTurnAfterApproval(
 				touchTurnState(state)
 				telemetry.recordApproval(nextApprovals.length)
 				console.log(
-					`[company-brain][${traceId}] follow-up approval requested count=${nextApprovals.length} id=${nextApproval.approvalId} tool=${nextApproval.toolName} slug=${nextApproval.slug ?? "-"}`,
+					`[kongming][${traceId}] follow-up approval requested count=${nextApprovals.length} id=${nextApproval.approvalId} tool=${nextApproval.toolName} slug=${nextApproval.slug ?? "-"}`,
 				)
 				telemetry.finishTurn({
 					outputChoices: lastProviderOutputChoices,
@@ -740,12 +740,12 @@ export async function resumeTurnAfterApproval(
 				}
 			} catch (error) {
 				console.warn(
-					`[company-brain][${traceId}] thread investigation checkpoint unavailable after approval: ${error instanceof Error ? error.message : String(error)}`,
+					`[kongming][${traceId}] thread investigation checkpoint unavailable after approval: ${error instanceof Error ? error.message : String(error)}`,
 				)
 			}
 
 			console.log(
-				`[company-brain][${traceId}] approval resume final replyChars=${reply.length} memoryCount=${memoryDocsFromWriteback(capture.memory).length}`,
+				`[kongming][${traceId}] approval resume final replyChars=${reply.length} memoryCount=${memoryDocsFromWriteback(capture.memory).length}`,
 			)
 			failurePhase = "completion"
 			telemetry.finishTurn({

@@ -369,7 +369,7 @@ export function createSlackReplyReferenceResolver(args: {
 			return formatSlackChannelReferences(reply, channels, teamId)
 		} catch (error) {
 			console.warn(
-				"[company-brain] Slack channel reference lookup failed:",
+				"[kongming] Slack channel reference lookup failed:",
 				error,
 			)
 			return formatSlackChannelReferences(reply, [], teamId)

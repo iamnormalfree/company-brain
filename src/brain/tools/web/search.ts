@@ -51,7 +51,7 @@ export function createBrainWebSearchTool(
 			const t = Date.now()
 			const tag = traceId ? `[${traceId}]` : ""
 			console.log(
-				`[company-brain]${tag} search_web start query="${logPreview(query)}"`,
+				`[kongming]${tag} search_web start query="${logPreview(query)}"`,
 			)
 			try {
 				// Retries and Retry-After backoff live in the context.dev client.
@@ -77,7 +77,7 @@ export function createBrainWebSearchTool(
 						).map((r) => ({ ...r, label: r.title }))
 				const kept = results.slice(0, KEEP_RESULTS)
 				console.log(
-					`[company-brain]${tag} search_web finish ms=${Date.now() - t} results=${results.length} kept=${kept.length}`,
+					`[kongming]${tag} search_web finish ms=${Date.now() - t} results=${results.length} kept=${kept.length}`,
 				)
 				if (!kept.length) {
 					return `No web results for "${query}". Try different wording, or drop any site: filter.`
@@ -86,7 +86,7 @@ export function createBrainWebSearchTool(
 					.map((r) => `- ${r.label}\n  ${r.url}\n  ${r.description}`)
 					.join("\n")
 			} catch (err) {
-				console.warn(`[company-brain]${tag} search_web error:`, err)
+				console.warn(`[kongming]${tag} search_web error:`, err)
 				// Rephrasing does nothing for a quota error, so say which it is.
 				return isRateLimited(err)
 					? "Web search is rate limited right now. Answer from what you already have, or ask the person to retry in a minute. Searching again will not help."

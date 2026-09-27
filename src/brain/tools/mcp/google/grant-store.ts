@@ -59,7 +59,7 @@ export function googleCallbackLockKey(
 	userId: string,
 	slug: string,
 ): string {
-	return `company-brain:embedded-callback:${orgId}:${userId}:${slug}`
+	return `kongming:embedded-callback:${orgId}:${userId}:${slug}`
 }
 
 export function googleGrantStatus(scopes: readonly string[]): {

@@ -364,12 +364,12 @@ export async function runDraft(args: RunDraftArgs): Promise<DraftResult> {
 	const elapsedMs = Date.now() - startedAt
 	// Where a round's wall time actually goes, per draft.
 	console.log(
-		`[company-brain] auto-research turn org=${org.id} kind=${job.kind} status=${out.status} ms=${elapsedMs}`,
+		`[kongming] auto-research turn org=${org.id} kind=${job.kind} status=${out.status} ms=${elapsedMs}`,
 	)
 	// Silent drops made an empty round indistinguishable from a slow one.
 	const drop = (reason: string): DraftResult => {
 		console.log(
-			`[company-brain] auto-research draft dropped org=${org.id} kind=${job.kind} reason=${reason}`,
+			`[kongming] auto-research draft dropped org=${org.id} kind=${job.kind} reason=${reason}`,
 		)
 		return { draft: null, reason }
 	}
@@ -391,7 +391,7 @@ export async function runDraft(args: RunDraftArgs): Promise<DraftResult> {
 		flags.push("no tool evidence behind this, it may be riffing from memory")
 
 	console.log(
-		`[company-brain] auto-research draft ready org=${org.id} kind=${job.kind} words=${words} tools=${trace.length} flags=${flags.length} ms=${elapsedMs}`,
+		`[kongming] auto-research draft ready org=${org.id} kind=${job.kind} words=${words} tools=${trace.length} flags=${flags.length} ms=${elapsedMs}`,
 	)
 	const sources = collectSources(trace, { includeExcerpts: !dm, cited })
 	const draft: NewAutoResearchDraft = dm

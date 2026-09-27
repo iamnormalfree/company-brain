@@ -76,7 +76,7 @@ async function backfillChannelMembers(
 	const members = await getConversationMembers(botToken, channelId)
 	if (members.length === 0) {
 		console.warn(
-			`[company-brain][membership] backfill skipped channel=${channelId}: no members returned (treated as fetch failure)`,
+			`[kongming][membership] backfill skipped channel=${channelId}: no members returned (treated as fetch failure)`,
 		)
 		return 0
 	}
@@ -134,7 +134,7 @@ export async function runSlackMembershipEvent(
 	if (!ws) return
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain][membership] event dropped: workspace rebound team=${msg.teamId} eventOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming][membership] event dropped: workspace rebound team=${msg.teamId} eventOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		return
 	}
@@ -157,12 +157,12 @@ export async function runSlackMembershipEvent(
 		if (isBot) {
 			purgeChannel(agent, channel)
 			console.log(
-				`[company-brain][membership] bot left private channel=${channel}; purged`,
+				`[kongming][membership] bot left private channel=${channel}; purged`,
 			)
 		} else {
 			removeMembership(agent, channel, user)
 			console.log(
-				`[company-brain][membership] leave channel=${channel} user=${user}`,
+				`[kongming][membership] leave channel=${channel} user=${user}`,
 			)
 		}
 		return
@@ -171,12 +171,12 @@ export async function runSlackMembershipEvent(
 	if (isBot) {
 		const count = await backfillChannelMembers(agent, botToken, channel, now)
 		console.log(
-			`[company-brain][membership] bot joined private channel=${channel}; backfilled ${count} members`,
+			`[kongming][membership] bot joined private channel=${channel}; backfilled ${count} members`,
 		)
 	} else {
 		recordMembership(agent, channel, user, now)
 		console.log(
-			`[company-brain][membership] join channel=${channel} user=${user}`,
+			`[kongming][membership] join channel=${channel} user=${user}`,
 		)
 	}
 }
@@ -195,7 +195,7 @@ export async function reconcileChannelMembership(
 	if (!ws) return
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain][membership] reconcile dropped: workspace rebound team=${teamId} reconcileOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming][membership] reconcile dropped: workspace rebound team=${teamId} reconcileOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		return
 	}
@@ -225,7 +225,7 @@ export async function reconcileChannelMembership(
 		}
 	}
 	console.log(
-		`[company-brain][membership] reconciled team=${teamId} privateChannels=${privateChannels.length} pruned=${pruned}`,
+		`[kongming][membership] reconciled team=${teamId} privateChannels=${privateChannels.length} pruned=${pruned}`,
 	)
 }
 

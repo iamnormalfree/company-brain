@@ -126,7 +126,7 @@ export class CompanyBrainAgent extends Agent<Env, CompanyBrainState> {
 		)
 		if (!result.accepted) {
 			console.log(
-				`[company-brain] duplicate Slack fiber ignored key=${idempotencyKey} status=${result.status}`,
+				`[kongming] duplicate Slack fiber ignored key=${idempotencyKey} status=${result.status}`,
 			)
 		}
 	}
@@ -571,7 +571,7 @@ export class CompanyBrainAgent extends Agent<Env, CompanyBrainState> {
 	): Promise<void> {
 		if (schedule?.type === "cron") {
 			console.warn(
-				`[company-brain] refused retired auto-research cron org=${this.name} schedule=${schedule.id}`,
+				`[kongming] refused retired auto-research cron org=${this.name} schedule=${schedule.id}`,
 			)
 			await this.cancelSchedule(schedule.id).catch(() => {})
 			return

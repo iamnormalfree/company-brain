@@ -6,7 +6,7 @@
 #
 # Usage:  bun scripts/dev-local.sh
 #
-# Not part of upstream supermemoryai/company-brain — fork-only helper.
+# Not part of upstream supermemoryai/company-brain (renamed to Kongming in this fork) — fork-only helper.
 
 set -euo pipefail
 

@@ -1125,7 +1125,7 @@ export const slackRoutes = new Hono<AppContext>()
 		}
 
 		console.info(
-			`[company-brain] slack identity linked org=${result.orgId} team=${result.teamId} slackUser=${result.slackUserId} user=${currentUser.id} source=web_confirmed`,
+			`[kongming] slack identity linked org=${result.orgId} team=${result.teamId} slackUser=${result.slackUserId} user=${currentUser.id} source=web_confirmed`,
 		)
 		const workspace = await getWorkspaceByTeamId(c.env, result.teamId)
 		if (workspace) {
@@ -1141,7 +1141,7 @@ export const slackRoutes = new Hono<AppContext>()
 					})
 				})().catch((error) => {
 					console.warn(
-						`[company-brain] slack identity confirmation failed org=${result.orgId} team=${result.teamId} slackUser=${result.slackUserId}:`,
+						`[kongming] slack identity confirmation failed org=${result.orgId} team=${result.teamId} slackUser=${result.slackUserId}:`,
 						error,
 					)
 				}),

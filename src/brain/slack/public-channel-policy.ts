@@ -9,7 +9,7 @@ export function isEligiblePublicChannel(
 		channel.isExternal ||
 		channel.isGeneral ||
 		channel.name.toLowerCase() === "general" ||
-		channel.name.toLowerCase() === "company-brain" ||
+		channel.name.toLowerCase() === "kongming" ||
 		channel.id === args.homeChannelId
 	)
 }

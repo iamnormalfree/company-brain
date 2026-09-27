@@ -26,7 +26,7 @@ import { BACKEND } from "@lib/api"
 
 type Channel = { id: string; name: string; isPrivate: boolean }
 
-const HOME_CHANNEL_NAME = "company-brain"
+const HOME_CHANNEL_NAME = "kongming"
 
 const MODES: {
 	id: BrainProactivityDefault

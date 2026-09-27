@@ -51,7 +51,7 @@ function boundedPeopleExecutor(traceId: string): Executor {
 				return { ...output, logs: undefined }
 			}
 			console.warn(
-				`[company-brain][${traceId}] people Code Mode output too large resultChars=${resultChars} resultLimit=${PEOPLE_CODE_RESULT_CHAR_LIMIT}`,
+				`[kongming][${traceId}] people Code Mode output too large resultChars=${resultChars} resultLimit=${PEOPLE_CODE_RESULT_CHAR_LIMIT}`,
 			)
 			return {
 				...output,

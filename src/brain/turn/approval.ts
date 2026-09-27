@@ -145,7 +145,7 @@ function rowToApproval(row: PendingApprovalRow): PendingApproval | null {
 		}
 	} catch (err) {
 		console.error(
-			`[company-brain] approval ${row.approval_id} has unparseable persisted state; dropping:`,
+			`[kongming] approval ${row.approval_id} has unparseable persisted state; dropping:`,
 			err,
 		)
 		return null

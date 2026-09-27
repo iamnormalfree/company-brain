@@ -63,5 +63,5 @@ export function memoriesToMarkdown(params: {
 }
 
 export function memoryExportFilename(exportedAt: Date): string {
-	return `company-brain-memories-${exportedAt.toISOString().slice(0, 10)}.md`
+	return `kongming-memories-${exportedAt.toISOString().slice(0, 10)}.md`
 }

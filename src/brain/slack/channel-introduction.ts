@@ -82,7 +82,7 @@ export async function extractChannelThemes(args: {
 				env: args.env,
 			}).catch((err) => {
 				console.warn(
-					"[company-brain-billing] channel_theme_extract failed:",
+					"[kongming-billing] channel_theme_extract failed:",
 					err instanceof Error ? err.message : err,
 				)
 			})
@@ -110,7 +110,7 @@ export async function extractChannelThemes(args: {
 		})
 	} catch (error) {
 		console.warn(
-			`[company-brain] channel theme extraction failed channel=${args.channelId} type=${error instanceof Error ? error.name : "unknown"}`,
+			`[kongming] channel theme extraction failed channel=${args.channelId} type=${error instanceof Error ? error.name : "unknown"}`,
 		)
 		return []
 	}
@@ -174,7 +174,7 @@ export async function composeChannelIntroduction(args: {
 				env: args.env,
 			}).catch((err) => {
 				console.warn(
-					"[company-brain-billing] channel_introduction failed:",
+					"[kongming-billing] channel_introduction failed:",
 					err instanceof Error ? err.message : err,
 				)
 			})
@@ -186,7 +186,7 @@ export async function composeChannelIntroduction(args: {
 		return output.text.trim() || fallback
 	} catch (error) {
 		console.warn(
-			`[company-brain] channel introduction composition failed type=${error instanceof Error ? error.name : "unknown"}`,
+			`[kongming] channel introduction composition failed type=${error instanceof Error ? error.name : "unknown"}`,
 		)
 		return fallback
 	}

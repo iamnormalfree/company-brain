@@ -88,7 +88,7 @@ export function slackMemoryCustomId(
 	const hashKey =
 		[memoryKey, rawKey.trim()].filter(Boolean).join(":") || "memory"
 	const keyHash = createHash("sha256").update(hashKey).digest("hex")
-	return `company-brain-slack:${utcDate}:${keyHash}`
+	return `kongming-slack:${utcDate}:${keyHash}`
 }
 
 export function privateSlackChannelContainerTag(channelId: string): string {
@@ -188,8 +188,8 @@ export function buildSlackMemoryWriteRequest(
 			? ""
 			: `:epoch${options.expectedResetEpoch}`
 	const customId =
-		(internalCustomId?.startsWith("company-brain-channel-observe:") ||
-		internalCustomId?.startsWith("company-brain-research:")
+		(internalCustomId?.startsWith("kongming-channel-observe:") ||
+		internalCustomId?.startsWith("kongming-research:")
 			? internalCustomId
 			: undefined) ||
 		slackMemoryCustomId(
@@ -200,8 +200,8 @@ export function buildSlackMemoryWriteRequest(
 	const containerTag = slackMemoryContainerTag(scope)
 	if (!containerTag) return null
 	const metadata: Record<string, string | number | boolean | string[]> = {
-		sm_source: "company-brain",
-		source_type: "company-brain-slack",
+		sm_source: "kongming",
+		source_type: "kongming-slack",
 		sm_internal_event_from: "slack",
 		ingestion_date: ingestionDate,
 		memory_scope: scope?.kind ?? "shared",

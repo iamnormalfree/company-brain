@@ -288,7 +288,7 @@ function rowToRequest(row: BrainLeaseRow): LeaseRequest | null {
 		}
 	} catch (err) {
 		console.error(
-			`[company-brain] lease request ${row.request_id} has unparseable state; dropping:`,
+			`[kongming] lease request ${row.request_id} has unparseable state; dropping:`,
 			err,
 		)
 		return null

@@ -55,7 +55,7 @@ export async function composeStarters(
 		env,
 	}).catch((err) => {
 		console.warn(
-			`[company-brain-billing] ${source} failed:`,
+			`[kongming-billing] ${source} failed:`,
 			err instanceof Error ? err.message : err,
 		)
 	})

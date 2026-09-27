@@ -122,7 +122,7 @@ export async function derivePlan(
 	}).map((t) => t.label)
 	if (!companyContext && !profileContext && !vocab.length) {
 		console.log(
-			`[company-brain] auto-research plan skipped org=${orgId}: no context`,
+			`[kongming] auto-research plan skipped org=${orgId}: no context`,
 		)
 		return { plan: null, reason: "no_context" }
 	}
@@ -184,7 +184,7 @@ export async function derivePlan(
 			}),
 		}
 		console.log(
-			`[company-brain] auto-research plan org=${orgId} targets=${plan.targets.length} people=${plan.people.length}`,
+			`[kongming] auto-research plan org=${orgId} targets=${plan.targets.length} people=${plan.people.length}`,
 		)
 		return { plan }
 	} catch (err) {

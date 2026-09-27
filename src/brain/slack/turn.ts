@@ -721,7 +721,7 @@ async function runSlackApprovalDecisionInner(
 	}
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain] approval dropped: workspace rebound team=${decision.teamId} approvalOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming] approval dropped: workspace rebound team=${decision.teamId} approvalOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		await replyEphemeral(
 			decision,
@@ -736,7 +736,7 @@ async function runSlackApprovalDecisionInner(
 	)
 	if (!decisionUserLookup.ok) {
 		console.warn(
-			`[company-brain] approval verification failed org=${ws.orgId} slackUser=${decision.userId} reason=${decisionUserLookup.reason} error=${decisionUserLookup.error ?? "-"}`,
+			`[kongming] approval verification failed org=${ws.orgId} slackUser=${decision.userId} reason=${decisionUserLookup.reason} error=${decisionUserLookup.error ?? "-"}`,
 		)
 		await replyEphemeral(decision, formatSlackProfileLookupFailure())
 		return
@@ -751,7 +751,7 @@ async function runSlackApprovalDecisionInner(
 	const decisionActor = decisionResolution.actor
 	if (!decisionActor) {
 		console.warn(
-			`[company-brain] approval denied for non-member org=${ws.orgId} slackUser=${decision.userId} lookup=${decisionResolution.lookup}`,
+			`[kongming] approval denied for non-member org=${ws.orgId} slackUser=${decision.userId} lookup=${decisionResolution.lookup}`,
 		)
 		await replyEphemeral(
 			decision,
@@ -796,7 +796,7 @@ async function runSlackApprovalDecisionInner(
 	)
 	if (!resumeEntitlement.allowed) {
 		console.log(
-			`[company-brain] approval resume blocked: entitlement org=${org.id} reason=${resumeEntitlement.reason}`,
+			`[kongming] approval resume blocked: entitlement org=${org.id} reason=${resumeEntitlement.reason}`,
 		)
 		await updateDecisionResponse(
 			env,
@@ -964,13 +964,13 @@ async function runSlackApprovalDecisionInner(
 		}
 		markApprovalTerminal(agent, approval.approvalId, "error")
 		if (resumeDeadline.aborted) {
-			console.warn("[company-brain] approval resume hit wall-clock deadline")
+			console.warn("[kongming] approval resume hit wall-clock deadline")
 			// The abandoned write may still land, so never invite a blind retry.
 			reply =
 				"I lost track of that approved action before it finished, so I can't confirm whether it went through. Please check before running it again."
 		} else {
 			failed = true
-			console.error("[company-brain] approval resume failed:", err)
+			console.error("[kongming] approval resume failed:", err)
 			reply = "Sorry, I hit an error while resuming that approved action."
 		}
 	}
@@ -1016,7 +1016,7 @@ async function runSlackApprovalDecisionInner(
 			threadTs: approval.threadTs,
 			askerSlackUserId: approval.askerUser,
 		}).catch((err) => {
-			console.warn("[company-brain] post-turn-reflect arm failed:", err)
+			console.warn("[kongming] post-turn-reflect arm failed:", err)
 		})
 	}
 }
@@ -1138,7 +1138,7 @@ function scheduleTurnSuppressionTelemetry(
 				await captureBrainProactivitySuppression({ ...obs, ...args })
 			} catch {
 				console.warn(
-					`[company-brain] proactivity suppression telemetry failed trace=${obs.traceId}`,
+					`[kongming] proactivity suppression telemetry failed trace=${obs.traceId}`,
 				)
 			}
 		})(),
@@ -1156,7 +1156,7 @@ export async function runSlackConnectComplete(
 	if (!ws) return
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain] connect continuation dropped: workspace rebound team=${completion.teamId} continuationOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming] connect continuation dropped: workspace rebound team=${completion.teamId} continuationOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		return
 	}
@@ -1277,7 +1277,7 @@ export async function runSlackDebugReaction(
 	if (!ws) return
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain] debug reaction dropped: workspace rebound team=${msg.teamId} eventOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming] debug reaction dropped: workspace rebound team=${msg.teamId} eventOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		return
 	}
@@ -1288,7 +1288,7 @@ export async function runSlackDebugReaction(
 	const reactorLookup = await lookupSlackUserInfo(botToken, ev.user)
 	if (!reactorLookup.ok) {
 		console.warn(
-			`[company-brain] debug reaction verification failed org=${ws.orgId} slackUser=${ev.user} reason=${reactorLookup.reason} error=${reactorLookup.error ?? "-"}`,
+			`[kongming] debug reaction verification failed org=${ws.orgId} slackUser=${ev.user} reason=${reactorLookup.reason} error=${reactorLookup.error ?? "-"}`,
 		)
 		return
 	}
@@ -1305,7 +1305,7 @@ export async function runSlackDebugReaction(
 	const reactorActor = reactorResolution.actor
 	if (!reactorActor) {
 		console.warn(
-			`[company-brain] debug reaction denied for non-member org=${ws.orgId} slackUser=${ev.user} lookup=${reactorResolution.lookup}`,
+			`[kongming] debug reaction denied for non-member org=${ws.orgId} slackUser=${ev.user} lookup=${reactorResolution.lookup}`,
 		)
 		return
 	}
@@ -1317,7 +1317,7 @@ export async function runSlackDebugReaction(
 	// bot replies); silent otherwise so reacting to human messages is a no-op.
 	if (!trace) {
 		console.info(
-			`[company-brain] debug reaction ignored channel=${channel} ts=${messageTs} reason=trace_not_found`,
+			`[kongming] debug reaction ignored channel=${channel} ts=${messageTs} reason=trace_not_found`,
 		)
 		return
 	}
@@ -1330,7 +1330,7 @@ export async function runSlackDebugReaction(
 		text,
 		threadTs,
 	})
-	const detail = `[company-brain] debug-reaction channel=${channel} ts=${messageTs} parent=${threadTs ?? "legacy-root"} trace=${traceId} delivery=${delivery}`
+	const detail = `[kongming] debug-reaction channel=${channel} ts=${messageTs} parent=${threadTs ?? "legacy-root"} trace=${traceId} delivery=${delivery}`
 	if (delivery === "failed") console.warn(detail)
 	else console.log(detail)
 }
@@ -1348,7 +1348,7 @@ export async function runSlackMuteReaction(
 	if (!ws) return
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain] mute reaction dropped: workspace rebound team=${msg.teamId} eventOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming] mute reaction dropped: workspace rebound team=${msg.teamId} eventOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		return
 	}
@@ -1359,7 +1359,7 @@ export async function runSlackMuteReaction(
 	)
 	if (!trace?.threadTs) {
 		console.info(
-			`[company-brain] mute reaction ignored channel=${channel} ts=${messageTs} reason=trace_not_found`,
+			`[kongming] mute reaction ignored channel=${channel} ts=${messageTs} reason=trace_not_found`,
 		)
 		return
 	}
@@ -1372,7 +1372,7 @@ export async function runSlackMuteReaction(
 	const reactorLookup = await lookupSlackUserInfo(botToken, ev.user)
 	if (!reactorLookup.ok) {
 		console.warn(
-			`[company-brain] mute reaction verification failed org=${ws.orgId} slackUser=${ev.user} reason=${reactorLookup.reason}`,
+			`[kongming] mute reaction verification failed org=${ws.orgId} slackUser=${ev.user} reason=${reactorLookup.reason}`,
 		)
 		return
 	}
@@ -1386,7 +1386,7 @@ export async function runSlackMuteReaction(
 	).actor
 	if (!reactorActor) {
 		console.warn(
-			`[company-brain] mute reaction denied for non-member org=${ws.orgId} slackUser=${ev.user}`,
+			`[kongming] mute reaction denied for non-member org=${ws.orgId} slackUser=${ev.user}`,
 		)
 		return
 	}
@@ -1396,7 +1396,7 @@ export async function runSlackMuteReaction(
 		const owner =
 			getThreadMutedBy(agent, msg.teamId, channel, threadTs) ?? ev.user
 		console.log(
-			`[company-brain] thread muted org=${ws.orgId} channel=${channel} thread=${threadTs} by=${ev.user} owner=${owner}`,
+			`[kongming] thread muted org=${ws.orgId} channel=${channel} thread=${threadTs} by=${ev.user} owner=${owner}`,
 		)
 		const edited = await updateMuteFooter(
 			botToken,
@@ -1420,7 +1420,7 @@ export async function runSlackMuteReaction(
 	if (!mutedBy) return
 	if (mutedBy !== ev.user) {
 		console.log(
-			`[company-brain] unmute ignored: not the muter org=${ws.orgId} thread=${threadTs} muter=${mutedBy} remover=${ev.user}`,
+			`[kongming] unmute ignored: not the muter org=${ws.orgId} thread=${threadTs} muter=${mutedBy} remover=${ev.user}`,
 		)
 		await postSlackEphemeral(
 			botToken,
@@ -1433,7 +1433,7 @@ export async function runSlackMuteReaction(
 	}
 	clearThreadMuted(agent, msg.teamId, channel, threadTs)
 	console.log(
-		`[company-brain] thread unmuted org=${ws.orgId} channel=${channel} thread=${threadTs} by=${ev.user}`,
+		`[kongming] thread unmuted org=${ws.orgId} channel=${channel} thread=${threadTs} by=${ev.user}`,
 	)
 	const edited = await updateMuteFooter(
 		botToken,
@@ -1518,7 +1518,7 @@ async function warmLocalThreadContext(
 		}
 	} catch (error) {
 		console.warn(
-			`[company-brain] local thread context warmup failed channel=${args.channel} thread=${args.threadTs} error=${error instanceof Error ? error.message : String(error)}`,
+			`[kongming] local thread context warmup failed channel=${args.channel} thread=${args.threadTs} error=${error instanceof Error ? error.message : String(error)}`,
 		)
 		return { historyComplete: false }
 	}
@@ -1730,12 +1730,12 @@ async function runSlackPassiveThread(
 	})
 	if (!finalized) {
 		console.warn(
-			`[company-brain] thread chime discarded stale triage result team=${identity.teamId} channel=${identity.channel} message=${identity.messageTs}`,
+			`[kongming] thread chime discarded stale triage result team=${identity.teamId} channel=${identity.channel} message=${identity.messageTs}`,
 		)
 		return
 	}
 	console.log(
-		`[company-brain] thread chime triage=${triage.decision} source=${triage.source} priority=${"priority" in triage ? triage.priority : "-"} agentEffort=${"agentMainEffort" in triage ? (triage.agentMainEffort ?? "-") : "-"} trace=${traceId} org=${ws.orgId} channel=${ev.channel} thread=${ev.thread_ts} botInThread=${botInThread}`,
+		`[kongming] thread chime triage=${triage.decision} source=${triage.source} priority=${"priority" in triage ? triage.priority : "-"} agentEffort=${"agentMainEffort" in triage ? (triage.agentMainEffort ?? "-") : "-"} trace=${traceId} org=${ws.orgId} channel=${ev.channel} thread=${ev.thread_ts} botInThread=${botInThread}`,
 	)
 
 	if (triage.decision === "pass") {
@@ -1898,13 +1898,13 @@ async function runSlackTurnInner(
 			: await getWorkspaceByTeamId(brainAgent(agent).env, msg.teamId)
 	if (!ws) {
 		console.warn(
-			`[company-brain] no workspace for team ${msg.teamId}; dropping`,
+			`[kongming] no workspace for team ${msg.teamId}; dropping`,
 		)
 		return
 	}
 	if (ws.orgId !== agent.name) {
 		console.error(
-			`[company-brain] Slack turn dropped: workspace rebound team=${msg.teamId} turnOrg=${agent.name} currentOrg=${ws.orgId}`,
+			`[kongming] Slack turn dropped: workspace rebound team=${msg.teamId} turnOrg=${agent.name} currentOrg=${ws.orgId}`,
 		)
 		return
 	}
@@ -2025,7 +2025,7 @@ async function runSlackTurnInner(
 	)
 	if (!entitlement.allowed) {
 		console.log(
-			`[company-brain] entitlement blocked org=${org.id} team=${msg.teamId} reason=${entitlement.reason}`,
+			`[kongming] entitlement blocked org=${org.id} team=${msg.teamId} reason=${entitlement.reason}`,
 		)
 		// Mentions/DMs get a clear activate path; passive traffic just drops.
 		if (isMention || isDM || isAssistantThread) {
@@ -2047,7 +2047,7 @@ async function runSlackTurnInner(
 					)
 				}
 			} catch (err) {
-				console.warn("[company-brain] entitlement notice failed:", err)
+				console.warn("[kongming] entitlement notice failed:", err)
 			}
 		}
 		return
@@ -2114,14 +2114,14 @@ async function runSlackTurnInner(
 		: await resolveSlackReplyTarget(botToken, ev)
 	if (!replyTarget) {
 		console.warn(
-			`[company-brain] no reply target org=${ws.orgId} event=${ev.type} channel=${ev.channel ?? "?"} user=${ev.user ?? "?"}`,
+			`[kongming] no reply target org=${ws.orgId} event=${ev.type} channel=${ev.channel ?? "?"} user=${ev.user ?? "?"}`,
 		)
 		return
 	}
 	const { channel, threadTs } = replyTarget
 	if (!askerLookup.ok) {
 		console.warn(
-			`[company-brain] turn verification failed org=${org.id} slackUser=${ev.user ?? "?"} reason=${askerLookup.reason} error=${askerLookup.error ?? "-"}`,
+			`[kongming] turn verification failed org=${org.id} slackUser=${ev.user ?? "?"} reason=${askerLookup.reason} error=${askerLookup.error ?? "-"}`,
 		)
 		if (
 			shouldPostSlackOrgMemberDenial({
@@ -2156,7 +2156,7 @@ async function runSlackTurnInner(
 	const orgMember = actorResolution.actor
 	if (!orgMember) {
 		console.warn(
-			`[company-brain] turn denied for non-member org=${org.id} slackUser=${ev.user ?? "?"} lookup=${actorResolution.lookup}`,
+			`[kongming] turn denied for non-member org=${org.id} slackUser=${ev.user ?? "?"} lookup=${actorResolution.lookup}`,
 		)
 		if (
 			shouldPostSlackOrgMemberDenial({
@@ -2183,7 +2183,7 @@ async function runSlackTurnInner(
 					})
 				} catch (error) {
 					console.warn(
-						`[company-brain] account link prompt failed org=${org.id} team=${msg.teamId} slackUser=${ev.user}:`,
+						`[kongming] account link prompt failed org=${org.id} team=${msg.teamId} slackUser=${ev.user}:`,
 						error,
 					)
 					const denial = formatSlackOrgMemberDenial({
@@ -2217,7 +2217,7 @@ async function runSlackTurnInner(
 			!supersedeInterruptedThreadTurn(agent, opts.fiber.recoveredTurn)
 		) {
 			console.log(
-				`[company-brain] skip stale fiber recovery org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+				`[kongming] skip stale fiber recovery org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 			)
 			return
 		}
@@ -2256,7 +2256,7 @@ async function runSlackTurnInner(
 				)
 			}
 			console.log(
-				`[company-brain] stopped active turn org=${ws.orgId} channel=${channel} thread=${threadTs} turn=${activeTurn.turn_id}`,
+				`[kongming] stopped active turn org=${ws.orgId} channel=${channel} thread=${threadTs} turn=${activeTurn.turn_id}`,
 			)
 			return
 		}
@@ -2273,14 +2273,14 @@ async function runSlackTurnInner(
 		})
 		if (reservation === "duplicate") {
 			console.log(
-				`[company-brain] active-turn gate ignored duplicate follow-up org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+				`[kongming] active-turn gate ignored duplicate follow-up org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 			)
 			return
 		}
 		if (reservation === "inactive") {
 			activeTurn = getThreadTurn(agent, threadKey)
 			console.log(
-				`[company-brain] active turn changed before gate reservation; retrying current state org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+				`[kongming] active turn changed before gate reservation; retrying current state org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 			)
 			continue
 		}
@@ -2333,7 +2333,7 @@ async function runSlackTurnInner(
 			})
 			activeTurn = latestTurn
 			console.log(
-				`[company-brain] active turn changed during gate classification; retrying current state org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+				`[kongming] active turn changed during gate classification; retrying current state org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 			)
 			continue
 		}
@@ -2345,7 +2345,7 @@ async function runSlackTurnInner(
 				status: "ignored",
 			})
 			console.log(
-				`[company-brain] active-turn gate ignored follow-up org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+				`[kongming] active-turn gate ignored follow-up org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 			)
 			return
 		}
@@ -2366,7 +2366,7 @@ async function runSlackTurnInner(
 				status: "pending",
 			})
 			console.log(
-				`[company-brain] active-turn gate queued outcome=${gate.outcome} action=${gateAction} org=${ws.orgId} channel=${channel} thread=${threadTs} turn=${activeTurn.turn_id}`,
+				`[kongming] active-turn gate queued outcome=${gate.outcome} action=${gateAction} org=${ws.orgId} channel=${channel} thread=${threadTs} turn=${activeTurn.turn_id}`,
 			)
 			return
 		}
@@ -2385,7 +2385,7 @@ async function runSlackTurnInner(
 		)
 		if (!interrupted.row) {
 			console.log(
-				`[company-brain] skip revised turn start after missing active row org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+				`[kongming] skip revised turn start after missing active row org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 			)
 			return
 		}
@@ -2397,7 +2397,7 @@ async function runSlackTurnInner(
 		effectiveQuestion = interrupted.row.original_question.trim() || question
 		turnSteering = question
 		console.log(
-			`[company-brain] superseded active turn org=${ws.orgId} channel=${channel} thread=${threadTs} turn=${activeTurn.turn_id}`,
+			`[kongming] superseded active turn org=${ws.orgId} channel=${channel} thread=${threadTs} turn=${activeTurn.turn_id}`,
 		)
 		break
 	}
@@ -2440,7 +2440,7 @@ async function runSlackTurnInner(
 			return
 		}
 		console.log(
-			`[company-brain] connect follow-up using prior task org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+			`[kongming] connect follow-up using prior task org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 		)
 		effectiveQuestion = connectOriginalQuestion
 	}
@@ -2461,7 +2461,7 @@ async function runSlackTurnInner(
 		!inChannelThread
 	) {
 		console.log(
-			`[company-brain] skip thread reply org=${ws.orgId} channel=${channel} thread=${threadTs} botInThread=${botInThread} isMention=${isMention} nameAddressed=${isNameAddressed}`,
+			`[kongming] skip thread reply org=${ws.orgId} channel=${channel} thread=${threadTs} botInThread=${botInThread} isMention=${isMention} nameAddressed=${isNameAddressed}`,
 		)
 		return
 	}
@@ -2541,7 +2541,7 @@ async function runSlackTurnInner(
 	}
 
 	console.log(
-		`[company-brain] turn start trace=${traceId} org=${ws.orgId} channel=${channel} thread=${threadTs} message=${messageTs || "-"} user=${ev.user ?? "?"} q="${effectiveQuestion.slice(0, 60)}" steering=${turnSteering ? "yes" : "no"}`,
+		`[kongming] turn start trace=${traceId} org=${ws.orgId} channel=${channel} thread=${threadTs} message=${messageTs || "-"} user=${ev.user ?? "?"} q="${effectiveQuestion.slice(0, 60)}" steering=${turnSteering ? "yes" : "no"}`,
 	)
 
 	if (!passiveInvestigation) {
@@ -2667,7 +2667,7 @@ async function runSlackTurnInner(
 			})
 			if (!passiveInvestigation) markSeen(agent, ev.user, seenAt)
 		} catch (err) {
-			console.warn("[company-brain] interaction signal failed:", err)
+			console.warn("[kongming] interaction signal failed:", err)
 		}
 	}
 
@@ -2828,7 +2828,7 @@ async function runSlackTurnInner(
 	})
 	if (!turnControl) {
 		console.log(
-			`[company-brain] skip stale turn start org=${ws.orgId} channel=${channel} thread=${threadTs}`,
+			`[kongming] skip stale turn start org=${ws.orgId} channel=${channel} thread=${threadTs}`,
 		)
 		if (passiveInvestigation) {
 			if (passiveInvestigation.claim) {
@@ -2971,7 +2971,7 @@ async function runSlackTurnInner(
 			await armApprovalExpiry(agent, pending)
 			markBotThread(agent, msg.teamId, channel, threadTs)
 			console.log(
-				`[company-brain] approval suspended id=${pending.approvalId} org=${org.id} channel=${channel} thread=${threadTs}`,
+				`[kongming] approval suspended id=${pending.approvalId} org=${org.id} channel=${channel} thread=${threadTs}`,
 			)
 			return
 		}
@@ -3043,17 +3043,17 @@ async function runSlackTurnInner(
 						}
 						if (!connectResult.ok) {
 							console.warn(
-								`[company-brain] mcp connect start failed slug=${slug} error=${connectResult.error}`,
+								`[kongming] mcp connect start failed slug=${slug} error=${connectResult.error}`,
 							)
 						} else {
 							console.warn(
-								`[company-brain] mcp connect start returned no authorization state slug=${slug}`,
+								`[kongming] mcp connect start returned no authorization state slug=${slug}`,
 							)
 						}
 						return { status: "failed" as const, slug }
 					} catch (error) {
 						console.warn(
-							`[company-brain] mcp connect start threw slug=${slug} error=${error instanceof Error ? error.message : String(error)}`,
+							`[kongming] mcp connect start threw slug=${slug} error=${error instanceof Error ? error.message : String(error)}`,
 						)
 						return { status: "failed" as const, slug }
 					}
@@ -3089,7 +3089,7 @@ async function runSlackTurnInner(
 					})
 				} catch (error) {
 					console.warn(
-						`[company-brain] mcp connect card state failed error=${error instanceof Error ? error.message : String(error)}`,
+						`[kongming] mcp connect card state failed error=${error instanceof Error ? error.message : String(error)}`,
 					)
 				}
 			}
@@ -3153,7 +3153,7 @@ async function runSlackTurnInner(
 		}
 		if (turnDeadline.aborted) {
 			paused = true
-			console.warn("[company-brain] turn hit wall-clock deadline")
+			console.warn("[kongming] turn hit wall-clock deadline")
 			if (passiveInvestigation) {
 				passiveTerminalReason = "timeout"
 				reply = ""
@@ -3163,7 +3163,7 @@ async function runSlackTurnInner(
 			}
 		} else {
 			failed = true
-			console.error("[company-brain] computeTurn failed:", err)
+			console.error("[kongming] computeTurn failed:", err)
 			if (passiveInvestigation) {
 				passiveTerminalReason = "error"
 				reply = ""
@@ -3217,7 +3217,7 @@ async function runSlackTurnInner(
 			isThreadMuted(agent, msg.teamId, channel, threadTs)
 		) {
 			console.log(
-				`[company-brain] proactive reply dropped: thread muted mid-turn channel=${channel} thread=${threadTs}`,
+				`[kongming] proactive reply dropped: thread muted mid-turn channel=${channel} thread=${threadTs}`,
 			)
 			if (passiveInvestigation) passiveTerminalReason = "thread_muted"
 			reply = ""
@@ -3227,7 +3227,7 @@ async function runSlackTurnInner(
 			: { streamed: false as const }
 		const memoryDocs = memoryDocsFromWriteback(memory)
 		console.log(
-			`[company-brain] computed in ${Date.now() - startedAt}ms (memoryCount=${memoryDocs.length})`,
+			`[kongming] computed in ${Date.now() - startedAt}ms (memoryCount=${memoryDocs.length})`,
 		)
 
 		let replyMessageTs = finalizeResult.messageTs
@@ -3241,7 +3241,7 @@ async function runSlackTurnInner(
 		if (current && (replyMessageTs || reply.trim())) {
 			markBotThread(agent, msg.teamId, channel, threadTs)
 		}
-		console.log(`[company-brain] replied in ${Date.now() - startedAt}ms total`)
+		console.log(`[kongming] replied in ${Date.now() - startedAt}ms total`)
 
 		if (passiveInvestigation) {
 			const spoke = current && Boolean(reply.trim())
@@ -3333,7 +3333,7 @@ async function runSlackTurnInner(
 			originTraceId: traceId,
 			askerSlackUserId: ev.user,
 		}).catch((err) => {
-			console.warn("[company-brain] post-turn-reflect arm failed:", err)
+			console.warn("[kongming] post-turn-reflect arm failed:", err)
 		})
 	}
 }

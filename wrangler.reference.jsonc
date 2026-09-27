@@ -3,7 +3,7 @@
  * A Durable Object shares memory with the worker that defines it, so hosting the
  * class here keeps the HTTP routes and their libraries out of its 128MB budget.
  *
- * Deploy order matters: see docs/company-brain/do-split-runbook.md
+ * Deploy order matters: see docs/kongming/do-split-runbook.md
  *
  * Keep `secrets.required`, `define`, `alias` and `compatibility_flags` in sync
  * with wrangler.jsonc; secrets not listed here never reach this worker.
