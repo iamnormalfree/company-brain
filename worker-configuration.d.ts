@@ -10,6 +10,12 @@ interface __BaseEnv_Env {
 	COMPANY_BRAIN_AGENT: DurableObjectNamespace<import("./src/worker").CompanyBrainAgent>;
 	GMAIL_FETCH_RATE_LIMITER: RateLimit;
 	GRANOLA_FETCH_RATE_LIMITER: RateLimit;
+	// MANUAL ADDITION (kongming bd bridge) — bd bridge URL is public
+	// (loopback URL, safe to ship in wrangler types). Token lives in
+	// .dev.vars and is NOT typed by wrangler, so we hand-declare it here.
+	// If `wrangler types` regenerates this file, re-apply these two lines.
+	BD_BRIDGE_URL?: string;
+	BD_BRIDGE_TOKEN?: string;
 }
 declare namespace Cloudflare {
 	interface GlobalProps {

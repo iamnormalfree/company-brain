@@ -1,6 +1,7 @@
 import type { ToolSet } from "ai"
 import type { BrainCostLedger } from "../billing/cost"
 import { createConfigurationTool } from "../configuration"
+import { createBdBridgeTools } from "../tools/bd-bridge"
 import { buildLeaseRuntimeContext } from "../lease/store"
 import { createLeaseTools } from "../lease/tools"
 import type { LeaseRuntimeContext } from "../lease/types"
@@ -361,6 +362,12 @@ export async function assembleTurnTools(
 	const tools: ToolSet = {
 		search_company_brain: brainTool,
 		resolve_entity: resolveEntityTool,
+		// bd (Steve Yegge Beads) read tools. Authority:
+		// docs/adr/2026-09-29-kongming-strategic-context-architecture.md
+		// (bd is canonical for current workflow status). Always available --
+		// any actor that asks a workflow-status question should use these
+		// instead of asking supermemory or guessing.
+		...createBdBridgeTools({ env, traceId }),
 		// Passive investigations use their private no-reply sentinel. Interactive
 		// turns propose their terminal answer explicitly; publication stays runtime-owned.
 		...(passiveInvestigation

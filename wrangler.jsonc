@@ -8,6 +8,13 @@
 		"nodejs_compat_populate_process_env",
 		"enable_ctx_exports"
 	],
+	// Allow the worker to fetch localhost (127.0.0.1) for the bd HTTP bridge
+	// (bin/bd-bridge.py). Required because workerd otherwise refuses
+	// outbound HTTP to private/loopback addresses. Scoped to localhost only;
+	// the bridge itself binds 127.0.0.1 and requires a bearer token. If we
+	// ever move kongming to real CF Workers production (not wrangler dev),
+	// re-evaluate — this flag is unsafe in multi-tenant deployments.
+	"dangerouslyAllowHostBindings": true,
 	"minify": true,
 	"build": {
 		"command": "bun run build:web",
