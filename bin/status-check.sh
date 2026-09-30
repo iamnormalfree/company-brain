@@ -35,6 +35,16 @@ else
     FAIL=1
 fi
 
+# --- bd state (counts only; full status by hand) ---
+bd_state=$(bd status 2>/dev/null | awk '
+    /^[[:space:]]+Open:/ {open=$2}
+    /^[[:space:]]+In Progress:/ {inprog=$3}
+    /^[[:space:]]+Blocked:/ {blocked=$2}
+    /^[[:space:]]+Ready to Work:/ {ready=$4}
+    END {printf "open=%s in_progress=%s blocked=%s ready=%s", open, inprog, blocked, ready}
+')
+note "[info]  bd: $bd_state"
+
 # --- kongming public reachability (sanity, not a service) ---
 status="$(curl -sS --max-time 4 -o /dev/null -w '%{http_code}' https://kongming.brentnotes.com/health 2>&1 || echo '000')"
 if [ "$status" = "200" ]; then
