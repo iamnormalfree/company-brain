@@ -59,4 +59,9 @@ else
     printf '%s\n' "$OUTPUT" | tee -a "$LOG_FILE"
 fi
 
+# --- on-hold branches (bd hold-branch label) + orphan detection ---
+# Runs whether the service check passed or failed, so a Degraded status
+# doesn't suppress the hold-branches report. Output goes to the same log.
+STATUS_CHECK_QUIET=1 /srv/agents/operate/bin/hold-branches.sh
+
 exit "$FAIL"
